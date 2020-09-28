@@ -1,0 +1,36 @@
+.Footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background-color: #565254;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.footer-ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  gap: 2rem;
+  margin-left: 5%;
+}
+
+.foot-list {
+  padding: 1rem;
+  color: #a5a6a6;
+  font-size: 12px;
+}
+
+.foot-list:hover {
+  color: white;
+}
+
+.copy-right {
+  font-size: 10px;
+  margin-right: 5%;
+  color: #a5a6a6;
+}
