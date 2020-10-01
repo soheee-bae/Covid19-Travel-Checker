@@ -17,6 +17,7 @@ const Home = () => {
   const [tested, setTested] = useState("");
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -41,7 +42,12 @@ const Home = () => {
     <div className="Homepage">
       <div className="search-form">
         <FontAwesomeIcon className="search-icon" icon={faSearch} />
-        <input className="search-bar" type="search" />
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-bar"
+          value={search}
+          type="search"
+        />
       </div>
       <div className="mainContent">
         <div>Updated Time : {dateChecked}</div>
