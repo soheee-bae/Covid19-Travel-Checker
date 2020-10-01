@@ -12,6 +12,7 @@ const Home = () => {
   const [dashboard, setDashboard] = useState([{}]);
   const [num, setNum] = useState(0);
   console.log(dashboard);
+  console.log(dashboard);
 
   useEffect(() => {
     const fetchdata = async () => {
