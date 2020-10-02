@@ -9,13 +9,10 @@ const LoginPage = () => {
   return (
     <div className="LoginPage">
       <div className="Login-container">
-        <div className="LoginTitleSection">
-          <div className="LoginTitle">
-            <h5>LOG IN TO CONTINUE</h5>
-          </div>
-          <img className="Loginlogo" src={logo} alt="logo" />
+        <div className="LoginTitle">
+          <h5>LOG IN</h5>
         </div>
-        <form className="LoginInputSection">
+        <form className="LoginInput-Section">
           <input
             className="login-input"
             type="text"

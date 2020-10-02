@@ -9,13 +9,10 @@ const SignupPage = () => {
   return (
     <div className="SignupPage">
       <div className="Signup-container">
-        <div className="SignupTitleSection">
-          <div className="SignupTitle">
-            <h5>SIGN UP TO CONTINUE</h5>
-          </div>
-          <img className="Signuplogo" src={logo} alt="logo" />
+        <div className="SignupTitle">
+          <h5>SIGN UP</h5>
         </div>
-        <form className="SignupInputSection">
+        <form className="SignupInput-Section">
           <input
             className="Signup-input"
             type="text"
@@ -37,10 +34,10 @@ const SignupPage = () => {
           </button>
         </form>
         <div className="additionInfo">
-          <div className="btn-to-Signup">
+          <div className="btn-to-Login">
             Already have account?
             <Link to="/login" style={{ textDecoration: "none" }}>
-              <span className="direct-to-Loginin"> Log In</span>
+              <span className="direct-to-Login"> Log In</span>
             </Link>
           </div>
         </div>

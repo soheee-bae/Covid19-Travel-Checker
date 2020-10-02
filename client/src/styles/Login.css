@@ -1,0 +1,81 @@
+.LoginPage {
+  align-items: center;
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-top: 3%;
+}
+
+.Login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 60vh;
+}
+
+.LoginTitle {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.LoginInput-Section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.Loginbtn {
+  background-color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-weight: 400;
+  color: black;
+  margin-top: 2rem;
+}
+
+.Loginbtn:hover,
+.Loginbtn:active {
+  color: #707070;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-input {
+  border: none;
+  width: 27vw;
+  border-bottom: 0.5px solid #707070;
+  outline: none;
+  padding: 0.6rem;
+  text-align: center;
+  background-color: #fffbfe;
+}
+
+.additionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 13px;
+  color: #7a7d7d;
+  align-items: center;
+}
+
+.forgotpass {
+  color: #7a7d7d;
+}
+
+.forgotpass:hover,
+.forgotpass:active {
+  color: black;
+}
+
+.direct-to-signup {
+  color: #7a7d7d;
+}
+.direct-to-signup:hover,
+.direct-to-signup:active {
+  color: black;
+}
