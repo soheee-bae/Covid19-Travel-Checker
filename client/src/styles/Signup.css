@@ -1,11 +1,11 @@
-.LoginPage {
+.SignupPage {
   align-items: center;
   margin-right: 5%;
   margin-left: 5%;
   margin-top: 3%;
 }
 
-.Login-container {
+.Signup-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -13,19 +13,19 @@
   height: 60vh;
 }
 
-.LoginTitle {
+.SignupTitle {
   font-size: 25px;
   font-weight: bold;
   margin-bottom: 2rem;
 }
 
-.LoginInput-Section {
+.SignupInput-Section {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.Loginbtn {
+.Signupbtn {
   background-color: white;
   border: none;
   outline: none;
@@ -35,8 +35,8 @@
   margin-top: 2rem;
 }
 
-.Loginbtn:hover,
-.Loginbtn:active {
+.Signupbtn:hover,
+.Signupbtn:active {
   color: #707070;
   border: none;
   outline: none;
@@ -44,7 +44,7 @@
   font-weight: bold;
 }
 
-.login-input {
+.Signup-input {
   border: none;
   width: 27vw;
   border-bottom: 0.5px solid #707070;
@@ -72,10 +72,10 @@
   color: black;
 }
 
-.direct-to-signup {
+.direct-to-Login {
   color: #7a7d7d;
 }
-.direct-to-signup:hover,
-.direct-to-signup:active {
+.direct-to-Login:hover,
+.direct-to-Login:active {
   color: black;
 }

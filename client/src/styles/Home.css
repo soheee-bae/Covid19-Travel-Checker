@@ -1,3 +1,7 @@
+body {
+  background-color: #fffbfe;
+}
+
 .Homepage {
   display: flex;
   flex-direction: row;

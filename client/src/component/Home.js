@@ -4,14 +4,20 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+
 import axios from "axios";
-import CountUp, { useCountUp } from "react-countup";
+import CountUp from "react-countup";
 
 const Home = () => {
   //Fetching the data from api for overall us dashboard.
   const [dashboard, setDashboard] = useState([{}]);
-  const [num, setNum] = useState(0);
-  console.log(dashboard);
+  const [dateChecked, setDateChecked] = useState("");
+  const [positive, setPositive] = useState("");
+  const [tested, setTested] = useState("");
+  const [recovered, setRecovered] = useState("");
+  const [death, setDeath] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -19,6 +25,11 @@ const Home = () => {
         "https://api.covidtracking.com/v1/us/current.json"
       );
       setDashboard(result.data[0]);
+      setDateChecked(result.data[0].dateChecked);
+      setPositive(result.data[0].positive);
+      setTested(result.data[0].positive + result.data[0].negative);
+      setRecovered(result.data[0].recovered);
+      setDeath(result.data[0].death);
     };
     const savedata = () => {};
     fetchdata();
@@ -31,16 +42,41 @@ const Home = () => {
     <div className="Homepage">
       <div className="search-form">
         <FontAwesomeIcon className="search-icon" icon={faSearch} />
-        <input className="search-bar" type="search" />
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-bar"
+          value={search}
+          type="search"
+        />
       </div>
       <div className="mainContent">
-        <h3>Updated Time : {dashboard.dateChecked}</h3>
-        <h3>Confirmed:{dashboard.positive}</h3>
-        <h3>Tested :{dashboard.positive + dashboard.negative}</h3>
-        <h3>Recovered : {dashboard.recovered}</h3>
-        <h3>Death : {dashboard.death}</h3>
-        <h3>Death Increase : {dashboard.deathIncrease}</h3>
-        <h3>Positive Increase : {dashboard.positiveIncrease}</h3>
+        <div>Updated Time : {dateChecked}</div>
+        <div>
+          <h3>
+            Confirmed :
+            <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+            {dashboard.positiveIncrease}
+          </h3>
+          <CountUp end={positive} start={0} duration={4} separator="," />
+        </div>
+        <div>
+          <h3>
+            Tested : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+            {dashboard.totalTestResultsIncrease}
+          </h3>
+          <CountUp end={tested} start={0} duration={4} separator="," />
+        </div>
+        <div>
+          <h3>Recovered :</h3>
+          <CountUp end={recovered} start={0} duration={4} separator="," />
+        </div>
+        <div>
+          <h3>
+            Deaths : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+            {dashboard.deathIncrease}
+          </h3>
+          <CountUp end={death} start={0} duration={4} separator="," />
+        </div>
       </div>
       {/*This section is just for the arrow to previous and next pages*/}
       <div className="rightarrow">
