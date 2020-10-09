@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Home.css";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import Select from "react-select";
+import stateList from "../stateList/StateList.json";
 
 import axios from "axios";
 import CountUp from "react-countup";
 
-const Home = () => {
+const Home = (props) => {
   //Fetching the data from api for overall us dashboard.
   const [dashboard, setDashboard] = useState([{}]);
   const [dateChecked, setDateChecked] = useState("");
@@ -19,6 +20,57 @@ const Home = () => {
   const [death, setDeath] = useState("");
   const [search, setSearch] = useState("");
 
+  const HandleonChange = (search) => {
+    setSearch(search);
+    props.history.push({
+      pathname: "/state-covid19-dashboard",
+      state: { state: search.value },
+    });
+  };
+
+  const searchList = stateList.map(({ State }) => {
+    return { value: State, label: State };
+  });
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      fontSize: 16,
+      border: state.isFocused ? 0 : 0,
+      boxShadow: state.isFocused ? 0 : 0,
+      cursor: "text",
+      borderRadius: 5,
+      padding: 4,
+    }),
+
+    option: (styles, { isFocused }) => {
+      return {
+        ...styles,
+        cursor: "pointer",
+        backgroundColor: isFocused ? "white" : "white",
+        color: isFocused ? "rgba(255, 80, 86)" : "black",
+        lineHeight: 2,
+        fontSize: 14,
+      };
+    },
+
+    input: (styles) => ({
+      ...styles,
+      color: "black",
+    }),
+
+    menu: (styles) => ({
+      ...styles,
+      marginTop: 0,
+      boxShadow: "none",
+      borderRadius: 0,
+      borderTop: "solid 1px",
+    }),
+
+    singleValue: (styles) => ({
+      ...styles,
+      color: "rgba(255, 80, 86)",
+    }),
+  };
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios(
@@ -41,12 +93,13 @@ const Home = () => {
     //Use the 'styles/Home.css' to style this page.
     <div className="Homepage">
       <div className="search-form">
-        <FontAwesomeIcon className="search-icon" icon={faSearch} />
-        <input
-          onChange={(e) => setSearch(e.target.value)}
+        <Select
+          options={searchList}
+          placeholder="Search the state..."
+          openMenuOnClick={false}
           className="search-bar"
-          value={search}
-          type="search"
+          styles={customStyles}
+          onChange={HandleonChange}
         />
       </div>
       <div className="mainContent">
@@ -77,12 +130,6 @@ const Home = () => {
           </h3>
           <CountUp end={death} start={0} duration={4} separator="," />
         </div>
-      </div>
-      {/*This section is just for the arrow to previous and next pages*/}
-      <div className="rightarrow">
-        <Link to="/state-covid19-dashboard" style={{ textDecoration: "none" }}>
-          <FontAwesomeIcon className="arrow-icon" icon={faAngleRight} />
-        </Link>
       </div>
     </div>
   );
