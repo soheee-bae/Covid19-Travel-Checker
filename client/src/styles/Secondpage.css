@@ -37,5 +37,6 @@ body {
 
 .arrow-icon {
   font-size: 30px;
-  color: #565254;
+  color: black;
+  fill: black;
 }
