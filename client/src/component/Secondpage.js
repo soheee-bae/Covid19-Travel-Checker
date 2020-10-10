@@ -23,18 +23,89 @@ const Secondpage = (props) => {
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
   const [stateName, setStateName] = useState(selectedState);
+  const [stateAbrev, setStateAbrev] = useState("");
 
+  
+  var x = 0;
+  var stateArray = ["Alaska",
+  "Alabama",
+  "Arkansas",
+  "American Samoa",
+  "Arizona",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "District of Columbia",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Guam",
+  "Hawaii",
+  "Iowa",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Massachusetts",
+  "Maryland",
+  "Maine",
+  "Michigan",
+  "Minnesota",
+  "Missouri",
+  "Northern Mariana Islands",
+  "Mississippi",
+  "Montana",
+  "North Carolina",
+  "North Dakota",
+  "Nebraska",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "Nevada",
+  "New York",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Puerto Rico",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Virginia",
+  "Virgin Islands",
+  "Vermont",
+  "Washington",
+  "Wisconsin",
+  "West Virginia",
+  "Wyoming"];
+
+  var arrayLength = stateArray.length;
+  for (var i = 0; i < arrayLength; i++) {
+    //console.log(stateArray[i]);
+    if (stateArray[i] === stateName) {
+      x = i;
+      break;
+    }
+  
+}
+  
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios(
         "https://api.covidtracking.com/v1/states/current.json"
       );
-      setDashboard(result.data[0]);
-      setDateChecked(result.data[0].dateChecked);
-      setPositive(result.data[0].positive);
-      setTested(result.data[0].positive + result.data[0].negative);
-      setRecovered(result.data[0].recovered);
-      setDeath(result.data[0].death);
+      setDashboard(result.data[x]);
+      setDateChecked(result.data[x].dateChecked);
+      setPositive(result.data[x].positive);
+      setTested(result.data[x].positive + result.data[x].negative);
+      setRecovered(result.data[x].recovered);
+      setDeath(result.data[x].death);
+      setStateAbrev(result.data[x].stateAbrev)
       //setStateName(result.data[0].state);
     };
     const savedata = () => {};
