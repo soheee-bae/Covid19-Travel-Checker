@@ -1,23 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Login.css";
+import axios from "axios";
 
 const LoginPage = () => {
+  const [userInfo, setUserInfo] = React.useState({
+    username: "",
+    password: "",
+  });
+  const [redirect, setRedirect] = React.useState(false);
+
+  const HandleSubmit = async (e) => {
+    e.preventDefault();
+    const data = await axios.post("http://localhost:3500/login", userInfo, {
+      withCredentials: true,
+      validateStatus: () => true,
+    });
+    if (data.status === 200) {
+      setRedirect(true);
+      console.log(data);
+    } else {
+      alert(data.data);
+    }
+  };
+
+  if (redirect === true) {
+    return <Redirect to="/" />;
+  }
   return (
     <div className="LoginPage">
       <div className="Login-container">
         <div className="LoginTitle">
           <h5>LOG IN</h5>
         </div>
-        <form className="LoginInput-Section">
+        <form onSubmit={HandleSubmit} className="LoginInput-Section">
           <input
             className="login-input"
             type="text"
             autoFocus
             required
             placeholder="Username"
+            onChange={(e) => {
+              setUserInfo({ ...userInfo, username: e.target.value });
+            }}
           />
           <input
             className="login-input"
@@ -25,6 +52,9 @@ const LoginPage = () => {
             autoFocus
             required
             placeholder="Password"
+            onChange={(e) => {
+              setUserInfo({ ...userInfo, password: e.target.value });
+            }}
           />
           <button type="submit" className="Loginbtn">
             Get Started <FontAwesomeIcon icon={faArrowRight} />
