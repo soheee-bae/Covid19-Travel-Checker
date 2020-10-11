@@ -6,11 +6,11 @@ import "../styles/Login.css";
 import axios from "axios";
 
 const LoginPage = () => {
-  const [userInfo, setUserInfo] = React.useState({
+  const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
   });
-  const [redirect, setRedirect] = React.useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
