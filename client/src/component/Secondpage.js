@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chart } from 'react-charts'
+import { Chart } from "react-charts";
 import "../styles/Secondpage.css";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -70,102 +70,127 @@ const Secondpage = (props) => {
   const data = React.useMemo(
     () => [
       {
-        label: 'Confirmed',
-        data: [[0, 1], [1, 2], [2, 4], [3, 2], [4, 7]]
+        label: "Confirmed",
+        data: [
+          [0, 1],
+          [1, 2],
+          [2, 4],
+          [3, 2],
+          [4, 7],
+        ],
       },
       {
-        label: 'Tested',
-        data: [[0, 3], [1, 1], [2, 5], [3, 6], [4, 4]]
+        label: "Tested",
+        data: [
+          [0, 3],
+          [1, 1],
+          [2, 5],
+          [3, 6],
+          [4, 4],
+        ],
       },
       {
-        label: 'Recovered',
-        data: [[0, 3], [1, 1], [2, 5], [3, 6], [4, 4]]
+        label: "Recovered",
+        data: [
+          [0, 3],
+          [1, 1],
+          [2, 5],
+          [3, 6],
+          [4, 4],
+        ],
       },
       {
-        label: 'Deaths',
-        data: [[0, 3], [1, 1], [2, 5], [3, 6], [4, 4]]
-      }
+        label: "Deaths",
+        data: [
+          [0, 3],
+          [1, 1],
+          [2, 5],
+          [3, 6],
+          [4, 4],
+        ],
+      },
     ],
     []
-  )
- 
+  );
+
   const axes = React.useMemo(
     () => [
-      { primary: true, type: 'utc', position: 'bottom' },
-      { type: 'linear', position: 'left' }
+      { primary: true, type: "utc", position: "bottom" },
+      { type: "linear", position: "left" },
     ],
     []
-  )
- 
+  );
+
   const lineChart = (
     <div
       style={{
-        width: '500px',
-        height: '305px'
+        width: "500px",
+        height: "305px",
       }}
     >
       <Chart data={data} axes={axes} />
     </div>
-  )
+  );
 
-  
   var x = 0;
-  var stateArray = ["Alaska",
-  "Alabama",
-  "Arkansas",
-  "American Samoa",
-  "Arizona",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "District of Columbia",
-  "Delaware",
-  "Florida",
-  "Georgia",
-  "Guam",
-  "Hawaii",
-  "Iowa",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Massachusetts",
-  "Maryland",
-  "Maine",
-  "Michigan",
-  "Minnesota",
-  "Missouri",
-  "Northern Mariana Islands",
-  "Mississippi",
-  "Montana",
-  "North Carolina",
-  "North Dakota",
-  "Nebraska",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "Nevada",
-  "New York",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Puerto Rico",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Virginia",
-  "Virgin Islands",
-  "Vermont",
-  "Washington",
-  "Wisconsin",
-  "West Virginia",
-  "Wyoming"];
+  var stateArray = [
+    "Alaska",
+    "Alabama",
+    "Arkansas",
+    "American Samoa",
+    "Arizona",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "District of Columbia",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Guam",
+    "Hawaii",
+    "Iowa",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Massachusetts",
+    "Maryland",
+    "Maine",
+    "Michigan",
+    "Minnesota",
+    "Missouri",
+    "Northern Mariana Islands",
+    "Mississippi",
+    "Montana",
+    "North Carolina",
+    "North Dakota",
+    "Nebraska",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "Nevada",
+    "New York",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Puerto Rico",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Virginia",
+    "Virgin Islands",
+    "Vermont",
+    "Washington",
+    "Wisconsin",
+    "West Virginia",
+    "Wyoming",
+  ];
 
   var arrayLength = stateArray.length;
   for (var i = 0; i < arrayLength; i++) {
@@ -174,9 +199,8 @@ const Secondpage = (props) => {
       x = i;
       break;
     }
-  
-}
-  
+  }
+
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios(
@@ -188,7 +212,7 @@ const Secondpage = (props) => {
       setTested(result.data[x].positive + result.data[x].negative);
       setRecovered(result.data[x].recovered);
       setDeath(result.data[x].death);
-      setStateAbrev(result.data[x].stateAbrev)
+      setStateAbrev(result.data[x].stateAbrev);
       //setStateName(result.data[0].state);
     };
     const savedata = () => {};
@@ -200,29 +224,25 @@ const Secondpage = (props) => {
     //Use the 'styles/Secondpage.css' to style this page.
     <div className="Secondpage">
       <div className="mainContent">
-        
-              {/*This section is just for the arrow to previous and next pages*/}
-      <div className="arrow-icon">
-          
-      <Link to="/" style={{ textDecoration: "none" }}>
-          
-        <FontAwesomeIcon icon={faAngleLeft} />
-      </Link>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <Link
-        to="/restrictions-on-travelers"
-        style={{ textDecoration: "none" }}
-      >
-        <FontAwesomeIcon icon={faAngleRight} />
-      </Link>
-    </div>
+        {/*This section is just for the arrow to previous and next pages*/}
+        <div className="arrow-icon">
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </Link>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link
+            to="/restrictions-on-travelers"
+            style={{ textDecoration: "none" }}
+          >
+            <FontAwesomeIcon icon={faAngleRight} />
+          </Link>
+        </div>
 
         <div>Updated Time : {dateChecked}</div>
         <div>
           {/* COVID-19 dashboard here */}
           <h1>State: {stateName}</h1>
 
-        
           <h3>
             Confirmed :
             <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
@@ -250,11 +270,7 @@ const Secondpage = (props) => {
         </div>
       </div>
 
-      <div className="graph">
-      {lineChart}
-      </div>
-
-
+      <div className="graph">{lineChart}</div>
     </div>
   );
 };

@@ -99,7 +99,7 @@ const Home = (props) => {
           openMenuOnClick={false}
           className="search-bar"
           styles={customStyles}
-          onChange={HandleonChange}
+          onChange={HandleonChange} 
         />
       </div>
       <div className="mainContent">
