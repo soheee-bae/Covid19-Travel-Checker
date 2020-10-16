@@ -12,29 +12,6 @@ body {
   margin-top: 10%;
 }
 
-.search-form {
-  position: relative;
-}
-
-.search-bar {
-  background-color: white;
-  border: none;
-  border-radius: 5px;
-  width: 25vw;
-  height: 2.5rem;
-  outline: none;
-  text-align: center;
-  box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.6);
-}
-
-.search-icon {
-  color: #565254;
-  position: absolute;
-  font-size: 18px;
-  margin-top: 0.7rem;
-  margin-left: 0.5rem;
-}
-
 .arrow-icon {
   font-size: 30px;
   color: black;

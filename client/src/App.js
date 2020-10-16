@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Footer from "./component/Footer";
 import Navbar from "./component/Navbar";
 import Home from "./component/Home";
 import About from "./component/About";
@@ -15,7 +14,8 @@ import Fourthpage from "./component/Fourthpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
 
-function App() {
+function App() {  
+
   return (
     <Router>
       <div className="App">
@@ -33,7 +33,6 @@ function App() {
           <Route path="/state-travel-restrictions" component={Fourthpage} />
           <Route path="/test-site-location" component={Testsitepage} />
         </Switch>
-        <Footer />
       </div>
     </Router>
   );

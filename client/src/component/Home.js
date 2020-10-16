@@ -31,15 +31,23 @@ const Home = (props) => {
   const searchList = stateList.map(({ State }) => {
     return { value: State, label: State };
   });
+
   const customStyles = {
     control: (base, state) => ({
       ...base,
-      fontSize: 16,
+      fontSize: 14,
       border: state.isFocused ? 0 : 0,
-      boxShadow: state.isFocused ? 0 : 0,
       cursor: "text",
       borderRadius: 5,
-      padding: 4,
+      width: "40vw",
+      minWidth:"300px",
+      height: "3rem",
+      padding:"0 1rem",
+      boxShadow: "0 10px 35px rgba(0,0,0,.2)",
+      color:"#6c757d",
+      outline: "none",
+      marginTop: "1rem",
+
     }),
 
     option: (styles, { isFocused }) => {
@@ -50,27 +58,41 @@ const Home = (props) => {
         color: isFocused ? "rgba(255, 80, 86)" : "black",
         lineHeight: 2,
         fontSize: 14,
+        width: "40vw",
+        height: "3rem",
+        minWidth:"300px",  zIndex:'0',
       };
     },
 
     input: (styles) => ({
       ...styles,
       color: "black",
+      width: "40vw",
+      fontSize:14,
+      minWidth:"300px",  zIndex:'0',
+
     }),
 
     menu: (styles) => ({
       ...styles,
-      marginTop: 0,
+      marginTop: '1rem',
       boxShadow: "none",
       borderRadius: 0,
       borderTop: "solid 1px",
+      width: "40vw",
+      height: "3rem",
+      minWidth:"300px",  zIndex:'0',
     }),
 
     singleValue: (styles) => ({
       ...styles,
       color: "rgba(255, 80, 86)",
+      width: "40vw",
+      height: "3rem",
+      minWidth:"300px",  zIndex:'0',
     }),
   };
+
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios(
@@ -93,42 +115,79 @@ const Home = (props) => {
     //Use the 'styles/Home.css' to style this page.
     <div className="Homepage">
       <div className="search-form">
+        <p className="Homepage-title">Where are you going?</p>
         <Select
           options={searchList}
-          placeholder="Search the state..."
+          placeholder="Search the state"
           openMenuOnClick={false}
           className="search-bar"
           styles={customStyles}
-          onChange={HandleonChange} 
+          onChange={HandleonChange}
         />
       </div>
-      <div className="mainContent">
-        <div>Updated Time : {dateChecked}</div>
-        <div>
-          <h3>
-            Confirmed :
-            <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.positiveIncrease}
-          </h3>
-          <CountUp end={positive} start={0} duration={4} separator="," />
+      <div className="mainContent-area">
+        <div className="title-container">
+          <p className="homepage-title">UNITED STATES</p>
+          <p className="dateupdated-US">{dateChecked}</p>
         </div>
-        <div>
-          <h3>
-            Tested : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.totalTestResultsIncrease}
-          </h3>
-          <CountUp end={tested} start={0} duration={4} separator="," />
-        </div>
-        <div>
-          <h3>Recovered :</h3>
-          <CountUp end={recovered} start={0} duration={4} separator="," />
-        </div>
-        <div>
-          <h3>
-            Deaths : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.deathIncrease}
-          </h3>
-          <CountUp end={death} start={0} duration={4} separator="," />
+        <div className="US-Covid-data">
+          <div className="US-Covid-data-first">
+            <div className="Confirmed-US">
+              <p className="Confirmed-subtitle">Confirmed</p>
+              <div className="Confirmed-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {dashboard.positiveIncrease}
+              </div>
+              <CountUp
+                className="Countup-data"
+                end={positive}
+                start={0}
+                duration={4}
+                separator=","
+              />
+            </div>
+            <div className="Tested-US">
+              <p className="Tested-subtitle">Tested</p>
+              <div className="Tested-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {dashboard.totalTestResultsIncrease}
+              </div>
+              <CountUp
+                className="Countup-data"
+                end={tested}
+                start={0}
+                duration={4}
+                separator=","
+              />
+            </div>
+          </div>
+          <div className="US-Covid-data-second">
+            <div className="Recovered-US">
+              <p className="Recovered-subtitle">Recovered</p>
+              <div className="Recovered-increased"> ..</div>
+              <CountUp
+                className="Countup-data"
+                end={recovered}
+                start={0}
+                duration={4}
+                separator=","
+              />
+            </div>
+            <div className="Deaths-US">
+              <p className="Deaths-subtitle">Deaths</p>
+              <div className="Deaths-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {dashboard.deathIncrease}
+              </div>
+              <CountUp
+                className="Countup-data"
+                end={death}
+                start={0}
+                duration={4}
+                separator=","
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
