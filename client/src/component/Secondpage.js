@@ -26,47 +26,6 @@ const Secondpage = (props) => {
   const [stateName, setStateName] = useState(selectedState);
   const [stateAbrev, setStateAbrev] = useState("");
 
-  const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      fontSize: 16,
-      border: state.isFocused ? 0 : 0,
-      boxShadow: state.isFocused ? 0 : 0,
-      cursor: "text",
-      borderRadius: 5,
-      padding: 4,
-    }),
-
-    option: (styles, { isFocused }) => {
-      return {
-        ...styles,
-        cursor: "pointer",
-        backgroundColor: isFocused ? "white" : "white",
-        color: isFocused ? "rgba(255, 80, 86)" : "black",
-        lineHeight: 2,
-        fontSize: 14,
-      };
-    },
-
-    input: (styles) => ({
-      ...styles,
-      color: "black",
-    }),
-
-    menu: (styles) => ({
-      ...styles,
-      marginTop: 0,
-      boxShadow: "none",
-      borderRadius: 0,
-      borderTop: "solid 1px",
-    }),
-
-    singleValue: (styles) => ({
-      ...styles,
-      color: "rgba(255, 80, 86)",
-    }),
-  };
-
   const data = React.useMemo(
     () => [
       {
