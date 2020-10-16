@@ -35,12 +35,19 @@ const Home = (props) => {
   const customStyles = {
     control: (base, state) => ({
       ...base,
-      fontSize: 16,
+      fontSize: 14,
       border: state.isFocused ? 0 : 0,
       cursor: "text",
       borderRadius: 5,
-      padding: 3,
-      width: "20rem",
+      width: "40vw",
+      minWidth:"300px",
+      height: "3rem",
+      padding:"0 1rem",
+      boxShadow: "0 10px 35px rgba(0,0,0,.2)",
+      color:"#6c757d",
+      outline: "none",
+      marginTop: "1rem",
+
     }),
 
     option: (styles, { isFocused }) => {
@@ -51,29 +58,38 @@ const Home = (props) => {
         color: isFocused ? "rgba(255, 80, 86)" : "black",
         lineHeight: 2,
         fontSize: 14,
-        width: "20rem",
+        width: "40vw",
+        height: "3rem",
+        minWidth:"300px",  zIndex:'0',
       };
     },
 
     input: (styles) => ({
       ...styles,
       color: "black",
-      width: "20rem",
+      width: "40vw",
+      fontSize:14,
+      minWidth:"300px",  zIndex:'0',
+
     }),
 
     menu: (styles) => ({
       ...styles,
-      marginTop: 0,
+      marginTop: '1rem',
       boxShadow: "none",
       borderRadius: 0,
       borderTop: "solid 1px",
-      width: "20rem",
+      width: "40vw",
+      height: "3rem",
+      minWidth:"300px",  zIndex:'0',
     }),
 
     singleValue: (styles) => ({
       ...styles,
       color: "rgba(255, 80, 86)",
-      width: "20rem",
+      width: "40vw",
+      height: "3rem",
+      minWidth:"300px",  zIndex:'0',
     }),
   };
 
@@ -99,7 +115,7 @@ const Home = (props) => {
     //Use the 'styles/Home.css' to style this page.
     <div className="Homepage">
       <div className="search-form">
-        <h3 className="where-are-you-going">WHERE ARE YOU GOING?</h3>
+        <p className="Homepage-title">Where are you going?</p>
         <Select
           options={searchList}
           placeholder="Search the state"
@@ -110,9 +126,9 @@ const Home = (props) => {
         />
       </div>
       <div className="mainContent-area">
-        <div className="Title-container">
-          <div className="homepage-title">UNITED STATES</div>
-          <div className="dateupdated-US">Updated on {dateChecked}</div>
+        <div className="title-container">
+          <p className="homepage-title">UNITED STATES</p>
+          <p className="dateupdated-US">{dateChecked}</p>
         </div>
         <div className="US-Covid-data">
           <div className="US-Covid-data-first">
@@ -148,6 +164,7 @@ const Home = (props) => {
           <div className="US-Covid-data-second">
             <div className="Recovered-US">
               <p className="Recovered-subtitle">Recovered</p>
+              <div className="Recovered-increased"> ..</div>
               <CountUp
                 className="Countup-data"
                 end={recovered}
