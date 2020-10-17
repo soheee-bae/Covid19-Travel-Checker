@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Signup.css";
 import axios from "axios";
+import {covidContext} from '../App'
 
-const SignupPage = (props) => {
-  const {
-    setWebtoken,
-    setLogged,
-    setDatainfo,
-  } = props;
+
+const SignupPage = () => {
+  const {webtoken} = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -25,14 +24,10 @@ const SignupPage = (props) => {
     });
     if (data.status === 200) {
       setRedirect(true);
-      setWebtoken(data.data);
-      setLogged(true);
-      setDatainfo(data.config.data);
+      window.localStorage.setItem('webtoken', data.data)
+      setWebToken(data.data)
     } else { 
       setRedirect(false);
-      setWebtoken("");
-      setLogged(false);      
-      setDatainfo({});
       alert(data.data);
     }
   };

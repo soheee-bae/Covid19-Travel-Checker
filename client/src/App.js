@@ -14,45 +14,33 @@ import Fourthpage from "./component/Fourthpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
 
+
+export const covidContext = React.createContext({})
+
 function App() {  
-const [webtoken, setWebtoken] = useState("")
-const [Logged, setLogged] = useState(false)
-const [dataInfo, setDatainfo] = useState("")
+const [webToken, setWebToken] = useState("")
+console.log(webToken)
 
 useEffect(()=>{
-  console.log("this is done")
-  if(window.localStorage.getItem('webtoken') === null){
-    setWebtoken("")
-    setLogged(false)
-    setDatainfo("")
-  }else{
-  setWebtoken(window.localStorage.getItem('webtoken'));
-  setLogged(window.localStorage.getItem('Logged'));
-  setDatainfo(window.localStorage.getItem('dataInfo'));
+  if(window.localStorage.getItem('webtoken') !== null){
+    setWebToken(window.localStorage.getItem('webtoken'))
   }
 },[])
-useEffect(() => {
-  window.localStorage.setItem('webtoken', webtoken)
-}, [webtoken])
-useEffect(() => {
-  window.localStorage.setItem('Logged', Logged)
-}, [Logged])
-useEffect(() => {
-  window.localStorage.setItem('dataInfo', dataInfo)
-}, [dataInfo])
+
 
   return (
+    <covidContext.Provider value ={{webtoken:[webToken, setWebToken]}}>
     <Router>
       <div className="App">
-        <Navbar Logged={Logged} setLogged={setLogged} setWebtoken={setWebtoken} dataInfo={dataInfo} setDatainfo={setDatainfo}/>
+        <Navbar />
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
           <Route path="/educationZone" component={EducationZone} />
           <Route path="/forum" component={Forum} />
-          <Route path="/login"><Login setWebtoken={setWebtoken} setLogged={setLogged} setDatainfo={setDatainfo} /></Route>
-          <Route path="/signup"><Signup setWebtoken={setWebtoken} setLogged={setLogged} setDatainfo={setDatainfo}/></Route>
+          <Route path="/login"><Login /></Route>
+          <Route path="/signup"><Signup /></Route>
           <Route path="/state-covid19-dashboard" component={Secondpage} />
           <Route path="/restrictions-on-travelers" component={Thirdpage} />
           <Route path="/state-travel-restrictions" component={Fourthpage} />
@@ -60,6 +48,7 @@ useEffect(() => {
         </Switch>
       </div>
     </Router>
+    </covidContext.Provider>
   );
 }
 

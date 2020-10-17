@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import { Link, Redirect } from "react-router-dom";
@@ -6,27 +6,21 @@ import { SidebarData } from "./SidebarData";
 import "../../src/styles/Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../img/logo.png";
+import {covidContext} from '../App'
 
-  const Navbar = (props) => {
-    const {
-      Logged,
-      setLogged,
-      setWebtoken,
-      dataInfo,
-      setDatainfo,
-    } = props;
+const Navbar = () => {
+  const {webtoken} = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
   const [sidebar, setSidebar] = useState(false);
-
   const showSidebar = () => setSidebar(!sidebar);
   
+
   const handleSignout=()=>{
-    setLogged(false);
-    setWebtoken("");
-    setDatainfo("");
+    window.localStorage.clear('webtoken')
+    setWebToken("")
   }
 
   return (
-    <>
       <div className="Topnavbar">
         <IconContext.Provider value={{ color: "#fff" }}>
           <div className="Sidenavbar">
@@ -60,30 +54,27 @@ import logo from "../img/logo.png";
         <div className="logo">
           <img src={logo} alt="logo"></img>
         </div>
-        {Logged ? (  
-        <div className="dropdown">
-            <p className="nav-dropdown">username</p>
-            <div className="nav-dropdown-list">
-              <Link
-                to="/reUsd/SellingHistory"
-                style={{ textDecoration: "none" }}
-              >
-                <ol className="nav-dropdown-item">PROFILE</ol>
-              </Link>
-              <button className="username-button" onClick={handleSignout}>
-
-                <ol className="nav-dropdown-item">SIGN OUT</ol>
-              </button>
-            </div>
-          </div>
-        ) :(
+        {webToken === "" ? (
         <ul className="navbar-ul">
-        <Link to="/login" style={{ textDecoration: "none" }}>
-          <ol className="nav-list">LOGIN</ol>
-        </Link>
-      </ul>)}
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            <ol className="nav-list">LOGIN</ol>
+          </Link>
+        </ul>
+        ) : (
+        <div className="dropdown">
+        <p className="nav-dropdown">username</p>
+        <div className="nav-dropdown-list">
+          <Link
+            to="/reUsd/SellingHistory"
+            style={{ textDecoration: "none" }}>
+            <ol className="nav-dropdown-item">PROFILE</ol>
+          </Link>
+          <button className="username-button" onClick={handleSignout}>
+            <ol className="nav-dropdown-item">SIGN OUT</ol>
+          </button>
+        </div>
+      </div> )}
       </div>
-    </>
   );
 }
 
