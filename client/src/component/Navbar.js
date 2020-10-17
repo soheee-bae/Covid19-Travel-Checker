@@ -7,15 +7,23 @@ import "../../src/styles/Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../img/logo.png";
 
-const Navbar = (props) => {
-  const {
-    Logged,
-  } = props;
+  const Navbar = (props) => {
+    const {
+      Logged,
+      setLogged,
+      setWebtoken,
+      dataInfo,
+      setDatainfo,
+    } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
   
-  
+  const handleSignout=()=>{
+    setLogged(false);
+    setWebtoken("");
+    setDatainfo("");
+  }
 
   return (
     <>
@@ -62,7 +70,8 @@ const Navbar = (props) => {
               >
                 <ol className="nav-dropdown-item">PROFILE</ol>
               </Link>
-              <button className="username-button">
+              <button className="username-button" onClick={handleSignout}>
+
                 <ol className="nav-dropdown-item">SIGN OUT</ol>
               </button>
             </div>
