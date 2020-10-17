@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "../../src/styles/Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../img/logo.png";
 
-function Navbar() {
+const Navbar = (props) => {
+  const {
+    Logged,
+  } = props;
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+  
+  
 
   return (
     <>
@@ -47,11 +52,27 @@ function Navbar() {
         <div className="logo">
           <img src={logo} alt="logo"></img>
         </div>
+        {Logged ? (  
+        <div className="dropdown">
+            <p className="nav-dropdown">username</p>
+            <div className="nav-dropdown-list">
+              <Link
+                to="/reUsd/SellingHistory"
+                style={{ textDecoration: "none" }}
+              >
+                <ol className="nav-dropdown-item">PROFILE</ol>
+              </Link>
+              <button className="username-button">
+                <ol className="nav-dropdown-item">SIGN OUT</ol>
+              </button>
+            </div>
+          </div>
+        ) :(
         <ul className="navbar-ul">
-          <Link to="/login" style={{ textDecoration: "none" }}>
-            <ol className="nav-list">LOGIN</ol>
-          </Link>
-        </ul>
+        <Link to="/login" style={{ textDecoration: "none" }}>
+          <ol className="nav-list">LOGIN</ol>
+        </Link>
+      </ul>)}
       </div>
     </>
   );

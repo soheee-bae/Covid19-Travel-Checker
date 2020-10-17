@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./component/Navbar";
@@ -15,19 +15,44 @@ import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
 
 function App() {  
+const [webtoken, setWebtoken] = useState("")
+const [Logged, setLogged] = useState(false)
+const [dataInfo, setDatainfo] = useState("")
+
+useEffect(()=>{
+  console.log("this is done")
+  if(window.localStorage.getItem('webtoken') === null){
+    setWebtoken("")
+    setLogged(false)
+    setDatainfo("")
+  }else{
+  setWebtoken(window.localStorage.getItem('webtoken'));
+  setLogged(window.localStorage.getItem('Logged'));
+  setDatainfo(window.localStorage.getItem('dataInfo'));
+  }
+},[])
+useEffect(() => {
+  window.localStorage.setItem('webtoken', webtoken)
+}, [webtoken])
+useEffect(() => {
+  window.localStorage.setItem('Logged', Logged)
+}, [Logged])
+useEffect(() => {
+  window.localStorage.setItem('dataInfo', dataInfo)
+}, [dataInfo])
 
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        <Navbar Logged={Logged} setLogged={setLogged} setWebtoken={setWebtoken} dataInfo={dataInfo} setDatainfo={setDatainfo}/>
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
           <Route path="/educationZone" component={EducationZone} />
           <Route path="/forum" component={Forum} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+          <Route path="/login"><Login setWebtoken={setWebtoken} setLogged={setLogged} setDatainfo={setDatainfo} /></Route>
+          <Route path="/signup"><Signup setWebtoken={setWebtoken} setLogged={setLogged} setDatainfo={setDatainfo}/></Route>
           <Route path="/state-covid19-dashboard" component={Secondpage} />
           <Route path="/restrictions-on-travelers" component={Thirdpage} />
           <Route path="/state-travel-restrictions" component={Fourthpage} />

@@ -5,7 +5,12 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Login.css";
 import axios from "axios";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
+  const {
+    setWebtoken,
+    setLogged,
+    setDatainfo,
+  } = props;
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -20,8 +25,14 @@ const LoginPage = () => {
     });
     if (data.status === 200) {
       setRedirect(true);
-      console.log(data);
-    } else {
+      setWebtoken(data.data);
+      setLogged(true);
+      setDatainfo(data.config.data);
+    } else { 
+      setRedirect(false);
+      setWebtoken("");
+      setLogged(false);      
+      setDatainfo({});
       alert(data.data);
     }
   };
