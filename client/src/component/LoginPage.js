@@ -5,11 +5,13 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Login.css";
 import axios from "axios";
 import {covidContext} from '../App'
+import { config } from "@fortawesome/fontawesome-svg-core";
 
 
 const LoginPage = () => { 
   const {webtoken} = useContext(covidContext);
   const [webToken, setWebToken] = webtoken;
+
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -26,6 +28,7 @@ const LoginPage = () => {
       setRedirect(true);
       window.localStorage.setItem('webtoken', data.data)
       setWebToken(data.data)
+
     } else { 
       setRedirect(false);
       alert(data.data);

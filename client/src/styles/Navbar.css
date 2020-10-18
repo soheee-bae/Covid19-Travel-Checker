@@ -27,11 +27,23 @@
   cursor: pointer;
 }
 
-.nav-list:hover {
+.signout-button {
+  outline: none;
+  border: none;
+  color: #7a7d7d;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: "Quicksand", sans-serif;
+  background-color: #f8f9fa;
+}
+
+.nav-list:hover,
+.signout-button:hover {
   color: black;
 }
 
-.nav-list:focus {
+.nav-list:focus,
+.signout-button:focus {
   color: black;
   text-decoration: underline;
 }
@@ -120,30 +132,10 @@
 .username-button {
   border: none;
 }
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.nav-dropdown-list {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  width: 100%;
-  text-align: center;
-  border: 1px solid #8a817c;
-}
-.nav-dropdown-item {
-  color: black;
-  background-color: white;
-  display: block;
-  padding: 1rem;
-  font-size: 11px;
+.navbar-ul-logged {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
   cursor: pointer;
-}
-.dropdown:hover .nav-dropdown-list {
-  display: block;
-}
-
-.nav-dropdown-item:hover {
-  color: #bcb8b1;
 }

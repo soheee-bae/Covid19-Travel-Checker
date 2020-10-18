@@ -10,6 +10,7 @@ import {covidContext} from '../App'
 const SignupPage = () => {
   const {webtoken} = useContext(covidContext);
   const [webToken, setWebToken] = webtoken;
+
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -26,6 +27,7 @@ const SignupPage = () => {
       setRedirect(true);
       window.localStorage.setItem('webtoken', data.data)
       setWebToken(data.data)
+
     } else { 
       setRedirect(false);
       alert(data.data);

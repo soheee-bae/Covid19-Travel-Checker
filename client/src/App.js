@@ -13,17 +13,18 @@ import Thirdpage from "./component/Thirdpage";
 import Fourthpage from "./component/Fourthpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
+import Profile from './component/Profile'
 
 
 export const covidContext = React.createContext({})
 
 function App() {  
-const [webToken, setWebToken] = useState("")
-console.log(webToken)
+  const [webToken, setWebToken] = useState("")
 
 useEffect(()=>{
   if(window.localStorage.getItem('webtoken') !== null){
     setWebToken(window.localStorage.getItem('webtoken'))
+
   }
 },[])
 
@@ -42,6 +43,7 @@ useEffect(()=>{
           <Route path="/login"><Login /></Route>
           <Route path="/signup"><Signup /></Route>
           <Route path="/state-covid19-dashboard" component={Secondpage} />
+          <Route path="/profile" component={Profile} />
           <Route path="/restrictions-on-travelers" component={Thirdpage} />
           <Route path="/state-travel-restrictions" component={Fourthpage} />
           <Route path="/test-site-location" component={Testsitepage} />

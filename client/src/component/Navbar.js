@@ -13,12 +13,14 @@ const Navbar = () => {
   const [webToken, setWebToken] = webtoken;
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
-  
 
   const handleSignout=()=>{
     window.localStorage.clear('webtoken')
-    setWebToken("")
+    window.localStorage.clear('dataInfo')
+    setWebToken("")    
   }
+
+
 
   return (
       <div className="Topnavbar">
@@ -61,19 +63,15 @@ const Navbar = () => {
           </Link>
         </ul>
         ) : (
-        <div className="dropdown">
-        <p className="nav-dropdown">username</p>
-        <div className="nav-dropdown-list">
-          <Link
-            to="/reUsd/SellingHistory"
-            style={{ textDecoration: "none" }}>
-            <ol className="nav-dropdown-item">PROFILE</ol>
+          <ul className="navbar-ul-logged">
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <ol className="nav-list">PROFILE</ol>
           </Link>
-          <button className="username-button" onClick={handleSignout}>
+          <button className="signout-button" onClick={handleSignout}>
             <ol className="nav-dropdown-item">SIGN OUT</ol>
           </button>
-        </div>
-      </div> )}
+        </ul>
+       )}
       </div>
   );
 }
