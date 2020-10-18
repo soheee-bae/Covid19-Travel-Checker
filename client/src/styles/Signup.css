@@ -1,8 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
 .SignupPage {
+  display: flex;
+  justify-content: center;
   align-items: center;
+  height: 90vh;
   margin-right: 5%;
   margin-left: 5%;
-  margin-top: 3%;
 }
 
 .Signup-container {
@@ -16,7 +24,6 @@
 .SignupTitle {
   font-size: 25px;
   font-weight: bold;
-  margin-bottom: 2rem;
 }
 
 .SignupInput-Section {
@@ -26,7 +33,7 @@
 }
 
 .Signupbtn {
-  background-color: white;
+  background-color: #f8f9fa;
   border: none;
   outline: none;
   cursor: pointer;
@@ -46,12 +53,12 @@
 
 .Signup-input {
   border: none;
-  width: 27vw;
+  width: 20vw;
   border-bottom: 0.5px solid #707070;
   outline: none;
-  padding: 0.6rem;
+  padding: 1rem;
   text-align: center;
-  background-color: #fffbfe;
+  background-color: #f8f9fa;
 }
 
 .additionInfo {
@@ -78,4 +85,10 @@
 .direct-to-Login:hover,
 .direct-to-Login:active {
   color: black;
+}
+
+@media only screen and (max-width: 700px) {
+  .Signup-input {
+    width: 40vw;
+  }
 }
