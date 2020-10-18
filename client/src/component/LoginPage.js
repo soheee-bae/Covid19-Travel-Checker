@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Login.css";
 import axios from "axios";
+import {covidContext} from '../App'
+import { config } from "@fortawesome/fontawesome-svg-core";
 
-const LoginPage = () => {
+
+const LoginPage = () => { 
+  const {webtoken} = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
+
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -20,8 +26,11 @@ const LoginPage = () => {
     });
     if (data.status === 200) {
       setRedirect(true);
-      console.log(data);
-    } else {
+      window.localStorage.setItem('webtoken', data.data)
+      setWebToken(data.data)
+
+    } else { 
+      setRedirect(false);
       alert(data.data);
     }
   };

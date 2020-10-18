@@ -1,19 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "../../src/styles/Navbar.css";
 import { IconContext } from "react-icons";
 import logo from "../img/logo.png";
+import {covidContext} from '../App'
 
-function Navbar() {
+const Navbar = () => {
+  const {webtoken} = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
   const [sidebar, setSidebar] = useState(false);
-
   const showSidebar = () => setSidebar(!sidebar);
 
+  const handleSignout=()=>{
+    window.localStorage.clear('webtoken')
+    window.localStorage.clear('dataInfo')
+    setWebToken("")    
+  }
+
+
+
   return (
-    <>
       <div className="Topnavbar">
         <IconContext.Provider value={{ color: "#fff" }}>
           <div className="Sidenavbar">
@@ -47,13 +56,23 @@ function Navbar() {
         <div className="logo">
           <img src={logo} alt="logo"></img>
         </div>
+        {webToken === "" ? (
         <ul className="navbar-ul">
           <Link to="/login" style={{ textDecoration: "none" }}>
             <ol className="nav-list">LOGIN</ol>
           </Link>
         </ul>
+        ) : (
+          <ul className="navbar-ul-logged">
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <ol className="nav-list">PROFILE</ol>
+          </Link>
+          <button className="signout-button" onClick={handleSignout}>
+            <ol className="nav-dropdown-item">SIGN OUT</ol>
+          </button>
+        </ul>
+       )}
       </div>
-    </>
   );
 }
 

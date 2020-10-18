@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./component/Navbar";
@@ -13,10 +13,24 @@ import Thirdpage from "./component/Thirdpage";
 import Fourthpage from "./component/Fourthpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
+import Profile from './component/Profile'
+
+
+export const covidContext = React.createContext({})
 
 function App() {  
+  const [webToken, setWebToken] = useState("")
+
+useEffect(()=>{
+  if(window.localStorage.getItem('webtoken') !== null){
+    setWebToken(window.localStorage.getItem('webtoken'))
+
+  }
+},[])
+
 
   return (
+    <covidContext.Provider value ={{webtoken:[webToken, setWebToken]}}>
     <Router>
       <div className="App">
         <Navbar />
@@ -26,15 +40,17 @@ function App() {
           <Route path="/contact" component={Contact} />
           <Route path="/educationZone" component={EducationZone} />
           <Route path="/forum" component={Forum} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+          <Route path="/login"><Login /></Route>
+          <Route path="/signup"><Signup /></Route>
           <Route path="/state-covid19-dashboard" component={Secondpage} />
+          <Route path="/profile" component={Profile} />
           <Route path="/restrictions-on-travelers" component={Thirdpage} />
           <Route path="/state-travel-restrictions" component={Fourthpage} />
           <Route path="/test-site-location" component={Testsitepage} />
         </Switch>
       </div>
     </Router>
+    </covidContext.Provider>
   );
 }
 

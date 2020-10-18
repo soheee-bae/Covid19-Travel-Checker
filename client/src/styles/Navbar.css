@@ -27,11 +27,23 @@
   cursor: pointer;
 }
 
-.nav-list:hover {
+.signout-button {
+  outline: none;
+  border: none;
+  color: #7a7d7d;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: "Quicksand", sans-serif;
+  background-color: #f8f9fa;
+}
+
+.nav-list:hover,
+.signout-button:hover {
   color: black;
 }
 
-.nav-list:focus {
+.nav-list:focus,
+.signout-button:focus {
   color: black;
   text-decoration: underline;
 }
@@ -115,4 +127,15 @@
 
 .navbar-list-title {
   margin-left: 20px;
+}
+
+.username-button {
+  border: none;
+}
+.navbar-ul-logged {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
 }

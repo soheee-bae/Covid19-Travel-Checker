@@ -29,12 +29,12 @@ router.post('/login', (req, res) => {
 		Account.findOne({ username: username }, (err, doc) => {
 			if (err) return reject(err);
 			if (doc == null) {
-				console.log("no exist reject");
+				//console.log("no exist reject");
 				return reject("Username does not exist")
 			};
 			return resolve([doc.password, doc.salt]);
 		});
-	});
+	}).catch((err) => res.status(404).send(err));
 
 	const hash = ([dbhash, salt]) => new Promise((resolve, reject) => {
 		bcrypt.hash(password, salt, (err, hash) => {
@@ -44,9 +44,9 @@ router.post('/login', (req, res) => {
 	});
 
 	const compare = ([dbhash, hash]) => new Promise((resolve, reject) => {
-		if (dbhash != hash) return reject("Incorrect password");
+		if (dbhash != hash) return reject( "Incorrect password");
 		return resolve(null);
-	});
+	}).catch((err) => res.status(404).send(err));
 
 	const genJwt = (_) => new Promise((resolve, reject) => {
 		console.log("genJwt");
@@ -80,7 +80,7 @@ router.post('/register', (req, res) => {
 			if (doc != null) return reject("Username already exists");
 			return resolve(null);
 		});
-	});
+	}).catch((err) => res.status(404).send(err));
 
 	const hash = (salt) => new Promise((resolve, reject) => {
 		bcrypt.genSalt(10, (err, salt) => {
@@ -108,7 +108,7 @@ router.post('/register', (req, res) => {
 	});
 
 	const respond = (jwt) => new Promise((resolve, reject) => {
-		res.send(jwt);
+		res.status(200).send(jwt);
 		return resolve(null);
 	});
 
