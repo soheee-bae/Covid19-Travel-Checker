@@ -1,14 +1,18 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
 var mongoose = require('mongoose');
-var jwt = require('jsonwebtoken')
+var jwt = require('jsonwebtoken');
+var axios = require('axios');
 
 var router = express.Router();
 router.use(express.json());
 
 const jwtKey = "0f9841176d94679a9ba9c9165ceb713e73c5de54c461ac3bf1a9545c26504fae3a6e3cb9f1b1652f5422777c6a4b82e5bd299bffb45aa71cbac273c39c5d3965";
 
+// connect to database
 mongoose.connect('mongodb://localhost/my_db');
+
+// create account schema
 var account = mongoose.Schema({
    username: String,
    password: String,
@@ -16,7 +20,37 @@ var account = mongoose.Schema({
 });
 var Account = mongoose.model("Account", account);
 
+// create state schema
+var stateData = mongoose.Schema({
+   name: String,
+   confirmed: Number,
+   tested: Number,
+   recovered: Number,
+   deaths: Number,
+   policy: String,
+});
+var StateData = mongoose.model("StateData", stateData);
+
+
+// clear database (testing)
 Account.remove({}, (req, result) => { });
+StateData.remove({}, (req, result) => { });
+
+// insert state data 
+const fillDB = async () => {
+	result = await axios("https://api.covidtracking.com/v1/states/current.json");
+	for (var x in result.data) {
+		new StateData({
+			name: result.data[x].state,
+			confirmed: result.data[x].positive,
+			tested: result.data[x].positive + result.data[x].negative,
+			recovered: result.data[x].recovered,
+			deaths: result.data[x].death,
+			policy: "dont get sick"
+		}).save((err, account) => { });
+	}
+}
+fillDB()
 
 router.post('/login', (req, res) => {
 	var username = req.body.username;
@@ -28,13 +62,10 @@ router.post('/login', (req, res) => {
 	const extractData = () => new Promise((resolve, reject) => {
 		Account.findOne({ username: username }, (err, doc) => {
 			if (err) return reject(err);
-			if (doc == null) {
-				//console.log("no exist reject");
-				return reject("Username does not exist")
-			};
+			if (doc == null) return reject("Username does not exist")
 			return resolve([doc.password, doc.salt]);
 		});
-	}).catch((err) => res.status(404).send(err));
+	});
 
 	const hash = ([dbhash, salt]) => new Promise((resolve, reject) => {
 		bcrypt.hash(password, salt, (err, hash) => {
@@ -46,7 +77,7 @@ router.post('/login', (req, res) => {
 	const compare = ([dbhash, hash]) => new Promise((resolve, reject) => {
 		if (dbhash != hash) return reject( "Incorrect password");
 		return resolve(null);
-	}).catch((err) => res.status(404).send(err));
+	});
 
 	const genJwt = (_) => new Promise((resolve, reject) => {
 		console.log("genJwt");
@@ -55,7 +86,7 @@ router.post('/login', (req, res) => {
 
 	const respond = (jwt) => new Promise((resolve, reject) => {
 		console.log("respond");
-		res.send(jwt);
+		res.status(200).send(jwt);
 		return resolve(null);
 	});
 
@@ -80,7 +111,7 @@ router.post('/register', (req, res) => {
 			if (doc != null) return reject("Username already exists");
 			return resolve(null);
 		});
-	}).catch((err) => res.status(404).send(err));
+	});
 
 	const hash = (salt) => new Promise((resolve, reject) => {
 		bcrypt.genSalt(10, (err, salt) => {
@@ -118,6 +149,20 @@ router.post('/register', (req, res) => {
 		.then(genJwt)
 		.then(respond)
 		.catch((err) => res.sendStatus(404));
+});
+
+router.get('/states/:name', (req, res) => {
+	StateData.findOne({ name: req.params.name }, (err, doc) => {
+		if (err || doc == null) return res.sendStatus(404);
+		return res.status(200).send({ 
+   			name: doc.name,
+   			confirmed: doc.confirmed,
+   			tested: doc.tested,
+   			recovered: doc.recovered,
+   			deaths: doc.deaths,
+   			policy: doc.policy,
+		});
+	});
 });
 
 module.exports = router;
