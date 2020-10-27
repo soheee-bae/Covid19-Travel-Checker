@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {Line} from 'react-chartjs-2';
-import { Chart } from "react-charts";
 import "../styles/Secondpage.css";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,6 +28,7 @@ const Secondpage = (props) => {
   const [stateName, setStateName] = useState(selectedState);
   const [stateAbrev, setStateAbrev] = useState("");
 
+  /*
   const [dateCheckedGraph, setDateCheckedGraph] = useState("");
   const [positiveGraph, setPositiveGraph] = useState("");
   const [testedGraph, setTestedGraph] = useState("");
@@ -102,9 +102,9 @@ const Secondpage = (props) => {
       x = i;
       break;
     }
-  }
+  } */
 
-  const data = {
+  let data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [
       {
@@ -126,8 +126,14 @@ const Secondpage = (props) => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56]
-      },
+        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86,]
+      }
+    ]
+  };
+
+  let data2 = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
       {
         label: 'Tested',
         fill: false,
@@ -148,7 +154,13 @@ const Secondpage = (props) => {
         pointRadius: 1,
         pointHitRadius: 10,
         data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86,]
-      },
+      }
+    ]
+  };
+
+  let data3 = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
       {
         label: 'Recovered',
         fill: false,
@@ -169,7 +181,13 @@ const Secondpage = (props) => {
         pointRadius: 1,
         pointHitRadius: 10,
         data: [75, 99, 50, 31, 66, 75, 60, 75, 99, 50, 31, 66]
-      },
+      }
+    ]
+  };
+
+  let data4 = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
       {
         label: 'Deaths',
         fill: false,
@@ -194,6 +212,12 @@ const Secondpage = (props) => {
     ]
   };
 
+  function graphIncrease(dataSet,val) {
+      dataSet.datasets.data = [20, 30, 40];
+      return dataSet.datasets.data;
+  }
+
+  /*
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios(
@@ -212,98 +236,93 @@ const Secondpage = (props) => {
       setTestedGraph(result.data[x].positiveGraph + result.data[x].negativeGraph);
       setRecoveredGraph(result.data[x].recoveredGraph);
       setDeathGraph(result.data[x].deathGraph); 
+      
+    };
+    
+    const savedata = () => {};
+    fetchdata();
+    savedata();
+  }, []); */
+  let abbrev = new Map();
+  abbrev["Alabama"] = "AL";
+  abbrev["Alaska"] = " AK";
+  abbrev["American Samoa"] = "AS";
+  abbrev["Arizona"] = "AZ";
+  abbrev["Arkansas"] = "AR";
+  abbrev["California"] = "CA";
+  abbrev["Colorado"] = "CO";
+  abbrev["Connecticut"] = "CT";
+  abbrev["Delaware"] = "DE";
+  abbrev["District Of Columbia"] = "DC";
+  abbrev["Florida"] = "FL";
+  abbrev["Georgia"] = "GA";
+  abbrev["Guam"] = "GU";
+  abbrev["Hawaii"] = "HI";
+  abbrev["Idaho"] = "ID";
+  abbrev["Illinois"] = "IL";
+  abbrev["Indiana"] = "IN";
+  abbrev["Iowa"] = "IA";
+  abbrev["Kansas"] = "KS";
+  abbrev["Kentucky"] = "KY";
+  abbrev["Louisiana"] = "LA";
+  abbrev["Maine"] = "ME";
+  abbrev["Maryland"] = "MD";
+  abbrev["Massachusetts"] = "MA";
+  abbrev["Michigan"] = "MI";
+  abbrev["Minnesota"] = "MN";
+  abbrev["Mississippi"] = "MS";
+  abbrev["Missouri"] = "MO";
+  abbrev["Montana"] = "MT";
+  abbrev["Nebraska"] = "NE";
+  abbrev["Nevada"] = "NV";
+  abbrev["New Hampshire"] = "NH";
+  abbrev["New Jersey"] = "NJ";
+  abbrev["New Mexico"] = "NM";
+  abbrev["New York"] = "NY";
+  abbrev["North Carolina"] = "NC";
+  abbrev["North Dakota"] = "ND";
+  abbrev["Northern Mariana Is"] = "MP";
+  abbrev["Ohio"] = "OH";
+  abbrev["Oklahoma"] = "OK";
+  abbrev["Oregon"] = "OR";
+  abbrev["Pennsylvania"] = "PA";
+  abbrev["Puerto Rico"] = "PR";
+  abbrev["Rhode Island"] = "RI";
+  abbrev["South Carolina"] = "SC";
+  abbrev["South Dakota"] = "SD";
+  abbrev["Tennessee"] = "TN";
+  abbrev["Texas"] = "TX";
+  abbrev["Utah"] = "UT";
+  abbrev["Vermont"] = "VT";
+  abbrev["Virginia"] = "VA";
+  abbrev["Virgin Islands"] = "VI";
+  abbrev["Washington"] = "WA";
+  abbrev["West Virginia"] = "WV";
+  abbrev["Wisconsin"] = "WI";
+  abbrev["Wyoming"] = "WY";
 
+  useEffect(() => {
+    const fetchdata = async () => {
+      const result = await axios("http://localhost:3500/states/" + abbrev[stateName]);
+      //setDashboard(result.data[x]);
+      //setDateChecked(result.data[x].dateChecked);
+      setPositive(result.confirmed);
+      setTested(result.tested);
+      setRecovered(result.recovered);
+      setDeath(result.deaths);
+      setStateAbrev(abbrev[stateName]);
+      //setStateName(result.data[0].state);
     };
     const savedata = () => {};
     fetchdata();
     savedata();
-  }, []); 
-/*
-  const getPositive = React.useCallback(positive)
-
-let data = React.useMemo(
-    () => [
-      {
-        label: "Confirmed",
-        data: [
-          [0, getPositive],
-          [1, getPositive],
-          [2, 4],
-          [3, 2],
-          [4, getPositive],
-        ],
-      },
-      {
-        label: "Tested",
-        data: [
-          [0, 3],
-          [1, 1],
-          [2, 5],
-          [3, 6],
-          [4, 4],
-        ],
-      },
-      {
-        label: "Recovered",
-        data: [
-          [0, 3],
-          [1, 1],
-          [2, 5],
-          [3, 6],
-          [4, 4],
-        ],
-      },
-      {
-        label: "Deaths",
-        data: [
-          [0, 3],
-          [1, 1],
-          [2, 5],
-          [3, 6],
-          [4, 4],
-        ],
-      },
-    ],
-    []
-  ); 
-
-  let data = (
-    () => [ {
-      data: [
-        [1,0],
-        [1,2],
-        [1,3],
-        [1,4],
-        [1,5],
-      ]
-    }] 
-  );
-
-  const getLabel = React.useCallback(series => series.label, [])
-
-  const axes = React.useMemo(
-    () => [
-      { primary: true, type: "utc", position: "bottom" },
-      { type: "linear", position: "left" },
-    ],
-    []
-  );
-
-  const lineChart = (
-    <div
-      style={{
-        width: "500px",
-        height: "305px",
-      }}
-    >
-      <Chart data={data} getLabel = {getLabel} axes={axes} />
-    </div>
-  ); */
+  }, []);
   return (
     //This is the Second page. It will have COVID-19 dashboard for chosen state.
     //Use the 'styles/Secondpage.css' to style this page.
     <div className="Secondpage">
-      <div className="mainContent">
+      <div className="mainContent-area">
+      <div className="tester">
         {/*This section is just for the arrow to previous and next pages*/}
         <div className="arrow-icon">
           <Link to="/" style={{ textDecoration: "none" }}>
@@ -317,14 +336,12 @@ let data = React.useMemo(
             <FontAwesomeIcon icon={faAngleRight} />
           </Link>
         </div>
-
         <div>Updated Time : {dateChecked}</div>
         <div>
           {/* COVID-19 dashboard here */}
           <h1>State: {stateName}</h1>
-
           <h3>
-            Confirmed :
+            Confirmed : 
             <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
             {dashboard.positiveIncrease}
           </h3>
@@ -349,24 +366,43 @@ let data = React.useMemo(
           <CountUp end={death} start={0} duration={4} separator="," />
         </div>
       </div>
+      </div>
+      {/*data.datasets.data = graphIncrease(data, dashboard.deathIncrease)}
+      {//data.datasets.data*/}
       <div className="graph">
       <Line 
         data={data}
         width={500}
-        height={300}
-        options={{maintainAspectRatio: false}}
+        height={250}
+        options={{ maintainAspectRatio: false }}
       />
-    </div> {/*
-    <div className="graph">
-      <Line 
-        data={data}
+      </div> 
+      <div className="graph2">
+       <Line 
+        data={data2}
         width={500}
-        height={300}
-        options={{maintainAspectRatio: false}}
+        height={250}
+        options={{ maintainAspectRatio: false }}
       />
-    </div> */}
+    </div>
+    <div className="graph3">
+      <Line 
+        data={data3}
+        width={500}
+        height={250}
+        options={{ maintainAspectRatio: false }}
+      />
+      </div> 
+      <div className="graph4">
+       <Line 
+        data={data4}
+        width={500}
+        height={250}
+        options={{ maintainAspectRatio: false }}
+      />
+    </div> 
     </div>
 );
 };
-//<div className="graph">{lineChart}</div>
+
 export default Secondpage;
