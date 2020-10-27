@@ -4,12 +4,22 @@ body {
 
 .Secondpage {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
+  flex-flow: row wrap;
+  gap: 2rem;
+  height: 95vh;
+  align-content: center;
   margin-right: 5%;
-  margin-left: 5%;
+  margin-left: 20%;
   margin-top: 10%;
+}
+
+.mainContent-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-content: center;
+  height: 50%;
+  width: 80%;
 }
 
 .arrow-icon {
@@ -18,14 +28,26 @@ body {
   fill: black;
 }
 
+.tester {
+  text-align: center;
+}
+
 .graph {
-  margin-right: 1%;
-  margin-left: 1%;
-  margin-top: 1%;
+  margin-left: 5%;
+  width: 35%
 }
 
 .graph2 {
-  margin-right: 1%;
-  margin-left: 1%;
-  margin-top: 1%;
+  width: 35%
 }
+
+.graph3 {
+  margin-left: 5%;
+  width: 35%;
+
+}
+
+.graph4 {
+  width: 35%
+}
+
