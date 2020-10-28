@@ -17,9 +17,13 @@ import Profile from './component/Profile'
 
 
 export const covidContext = React.createContext({})
+export const stateContext = React.createContext();
+
 
 function App() {  
   const [webToken, setWebToken] = useState("")
+  const [selectedState, setSelectedState] = useState("")
+
 
 useEffect(()=>{
   if(window.localStorage.getItem('webtoken') !== null){
@@ -31,6 +35,8 @@ useEffect(()=>{
 
   return (
     <covidContext.Provider value ={{webtoken:[webToken, setWebToken]}}>
+    <stateContext.Provider value ={{selectedState, setSelectedState}}>
+
     <Router>
       <div className="App">
         <Navbar />
@@ -50,6 +56,7 @@ useEffect(()=>{
         </Switch>
       </div>
     </Router>
+    </stateContext.Provider>
     </covidContext.Provider>
   );
 }

@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../styles/Home.css";
 import { Link, Redirect } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import stateList from "../stateList/StateList.json";
+import {stateContext} from '../App'
+
 
 import axios from "axios";
 import CountUp from "react-countup";
 
 const Home = (props) => {
-  //Fetching the data from api for overall us dashboard.
+  const {selectedState, setSelectedState} = useContext(stateContext);
+
   const [dashboard, setDashboard] = useState([{}]);
   const [dateChecked, setDateChecked] = useState("");
   const [positive, setPositive] = useState("");
   const [tested, setTested] = useState("");
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
-  const [search, setSearch] = useState("");
+
 
   const HandleonChange = (search) => {
-    setSearch(search);
+    setSelectedState(search.value);
     props.history.push({
       pathname: "/state-covid19-dashboard",
-      state: { state: search.value },
     });
   };
 
@@ -93,6 +95,7 @@ const Home = (props) => {
   };
 
   useEffect(() => {
+    setSelectedState("")
     const fetchdata = async () => {
       const result = await axios(
         "https://api.covidtracking.com/v1/us/current.json"
