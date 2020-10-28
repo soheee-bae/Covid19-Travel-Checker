@@ -27,6 +27,7 @@ var stateData = mongoose.Schema({
    tested: Number,
    recovered: Number,
    deaths: Number,
+   lastUpdated: String,
    policy: String,
 });
 var StateData = mongoose.model("StateData", stateData);
@@ -46,6 +47,7 @@ const fillDB = async () => {
 			tested: result.data[x].positive + result.data[x].negative,
 			recovered: result.data[x].recovered,
 			deaths: result.data[x].death,
+			lastUpdated:result.data[x].lastUpdateEt,
 			policy: "dont get sick"
 		}).save((err, account) => { });
 	}
@@ -160,7 +162,8 @@ router.get('/states/:name', (req, res) => {
    			tested: doc.tested,
    			recovered: doc.recovered,
    			deaths: doc.deaths,
-   			policy: doc.policy,
+			policy: doc.policy,
+			lastUpdated:doc.lastUpdated,
 		});
 	});
 });

@@ -1,53 +1,97 @@
 body {
-  background-color: #fffbfe;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+  background-color: #f8f9fa;
 }
 
 .Secondpage {
   display: flex;
-  flex-flow: row wrap;
-  gap: 2rem;
-  height: 95vh;
+  flex-direction: row;
+  justify-content: center;
+  gap: 3rem;
+  text-align: center;
   align-content: center;
-  margin-right: 5%;
-  margin-left: 20%;
-  margin-top: 10%;
+  align-items: center;
+  margin: 5%;
 }
-
+.left-arrow-icon,
+.right-arrow-icon {
+  font-size: 30px;
+}
 .mainContent-area {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  align-content: center;
-  height: 50%;
-  width: 80%;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  gap: 4rem;
 }
 
-.arrow-icon {
-  font-size: 30px;
-  color: black;
-  fill: black;
+.data-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.tester {
-  text-align: center;
+.updatedTime {
+  color: #707070;
+  margin-bottom: 2rem;
+  font-size: 13px;
+}
+
+.graph-area {
+  display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.detail-data-area {
+  display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
+  justify-content: center;
+  gap: 6rem;
+}
+
+.stateName {
+  margin-bottom: 1rem;
+}
+
+.detail-data-list {
+  margin-bottom: 1rem;
 }
 
 .graph {
-  margin-left: 5%;
-  width: 35%
+  width: 35%;
+  min-width: 250px;
 }
 
 .graph2 {
-  width: 35%
+  width: 35%;
+  min-width: 250px;
 }
 
 .graph3 {
-  margin-left: 5%;
   width: 35%;
-
+  min-width: 250px;
 }
 
 .graph4 {
-  width: 35%
+  width: 35%;
+  min-width: 250px;
 }
 
+@media only screen and (max-width: 800px) {
+  .detail-data-area {
+    display: flex;
+    flex-direction: row;
+    flex-flow: wrap;
+    justify-content: center;
+    gap: 4rem;
+  }
+}

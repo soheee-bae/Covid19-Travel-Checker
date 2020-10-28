@@ -17,7 +17,7 @@ const Navbar = () => {
   const handleSignout=()=>{
     window.localStorage.clear('webtoken')
     window.localStorage.clear('dataInfo')
-    setWebToken("")    
+    setWebToken("")
   }
 
 
@@ -42,6 +42,7 @@ const Navbar = () => {
               </li>
               {SidebarData.map((item, index) => {
                 return (
+                  
                   <li key={index} className={item.cName}>
                     <Link to={item.path}>
                       {item.icon}

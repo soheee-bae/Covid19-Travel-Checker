@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {Line} from 'react-chartjs-2';
 import "../styles/Secondpage.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 import CountUp from "react-countup";
-import { render } from "@testing-library/react";
+import {stateContext} from '../App'
 
 
-const Secondpage = (props) => {
-  //This is selected state from Homepage!!
-  const location = useLocation();
-  const selectedState = location.state.state;
+const Secondpage = () => {
+  const {selectedState, setSelectedState} = useContext(stateContext);
+  const selectState = selectedState
   //'selectedState' is the state selected by user from homepage!!
 
-  const [dashboard, setDashboard] = useState([{}]);
+  //const [dashboard, setDashboard] = useState([{}]);
   const [dateChecked, setDateChecked] = useState("");
   const [positive, setPositive] = useState("");
   const [tested, setTested] = useState("");
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
-  const [stateName, setStateName] = useState(selectedState);
+  const [stateName, setStateName] = useState(selectState);
   const [stateAbrev, setStateAbrev] = useState("");
 
   /*
@@ -304,12 +301,13 @@ const Secondpage = (props) => {
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios("http://localhost:3500/states/" + abbrev[stateName]);
-      //setDashboard(result.data[x]);
-      //setDateChecked(result.data[x].dateChecked);
-      setPositive(result.confirmed);
-      setTested(result.tested);
-      setRecovered(result.recovered);
-      setDeath(result.deaths);
+      //setDashboard(result.data); 
+      console.log(result);
+      setDateChecked(result.data.lastUpdated);
+      setPositive(result.data.confirmed);
+      setTested(result.data.tested);
+      setRecovered(result.data.recovered);
+      setDeath(result.data.deaths);
       setStateAbrev(abbrev[stateName]);
       //setStateName(result.data[0].state);
     };
@@ -321,86 +319,78 @@ const Secondpage = (props) => {
     //This is the Second page. It will have COVID-19 dashboard for chosen state.
     //Use the 'styles/Secondpage.css' to style this page.
     <div className="Secondpage">
-      <div className="mainContent-area">
-      <div className="tester">
-        {/*This section is just for the arrow to previous and next pages*/}
-        <div className="arrow-icon">
-          <Link to="/" style={{ textDecoration: "none" }}>
+      <div className="left-arrow-icon">
+          <Link to="/" style={{ textDecoration: "none", color:"black"}}>
             <FontAwesomeIcon icon={faAngleLeft} />
           </Link>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Link
-            to="/restrictions-on-travelers"
-            style={{ textDecoration: "none" }}
-          >
-            <FontAwesomeIcon icon={faAngleRight} />
-          </Link>
-        </div>
-        <div>Updated Time : {dateChecked}</div>
-        <div>
-          {/* COVID-19 dashboard here */}
-          <h1>State: {stateName}</h1>
-          <h3>
-            Confirmed : 
-            <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.positiveIncrease}
-          </h3>
-          <CountUp end={positive} start={0} duration={4} separator="," />
-        </div>
-        <div>
-          <h3>
-            Tested : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.totalTestResultsIncrease}
-          </h3>
-          <CountUp end={tested} start={0} duration={4} separator="," />
-        </div>
-        <div>
-          <h3>Recovered :</h3>
-          <CountUp end={recovered} start={0} duration={4} separator="," />
-        </div>
-        <div>
-          <h3>
-            Deaths : <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-            {dashboard.deathIncrease}
-          </h3>
-          <CountUp end={death} start={0} duration={4} separator="," />
-        </div>
       </div>
-      </div>
+      <div className="mainContent-area">
+        <div className ="data-area">
+          <div className='stateName'><h1>{stateName}</h1></div>
+          <div className='updatedTime'>{dateChecked}</div>
+          <div className='detail-data-area'>
+          <div className='StateConfirmed'>
+            <h3 className='detail-data-list'>Confirmed</h3>
+            <CountUp end={positive} start={0} duration={4} separator="," />
+          </div>
+          <div className='StateTested'>
+            <h3 className='detail-data-list'>Tested</h3>
+            <CountUp end={tested} start={0} duration={4} separator="," />
+          </div>
+          <div className='StateRecovered'>
+            <h3 className='detail-data-list'>Recovered</h3>
+            <CountUp end={recovered} start={0} duration={4} separator="," />
+          </div>
+          <div className='StateDeaths'>
+            <h3 className='detail-data-list'>Deaths</h3>
+            <CountUp end={death} start={0} duration={4} separator="," />
+          </div>
+        </div>
+        </div>
+
       {/*data.datasets.data = graphIncrease(data, dashboard.deathIncrease)}
       {//data.datasets.data*/}
-      <div className="graph">
-      <Line 
-        data={data}
-        width={500}
-        height={250}
-        options={{ maintainAspectRatio: false }}
-      />
-      </div> 
-      <div className="graph2">
-       <Line 
-        data={data2}
-        width={500}
-        height={250}
-        options={{ maintainAspectRatio: false }}
-      />
-    </div>
-    <div className="graph3">
-      <Line 
-        data={data3}
-        width={500}
-        height={250}
-        options={{ maintainAspectRatio: false }}
-      />
-      </div> 
-      <div className="graph4">
-       <Line 
-        data={data4}
-        width={500}
-        height={250}
-        options={{ maintainAspectRatio: false }}
-      />
-    </div> 
+      <div className='graph-area'>
+        <div className="graph">
+          <Line 
+            data={data}
+            width={500}
+            height={250}
+            options={{ maintainAspectRatio: false }}
+          />
+        </div> 
+        <div className="graph2">
+          <Line 
+            data={data2}
+            width={500}
+            height={250}
+            options={{ maintainAspectRatio: false }}
+          />
+      </div>
+      <div className="graph3">
+        <Line 
+          data={data3}
+          width={500}
+          height={250}
+          options={{ maintainAspectRatio: false }}
+        />
+        </div> 
+        <div className="graph4">
+          <Line 
+            data={data4}
+            width={500}
+            height={250}
+            options={{ maintainAspectRatio: false }}
+          />
+        </div> 
+      </div>
+      </div>
+      <div className="right-arrow-icon">
+          <Link to="/restrictions-on-travelers" style={{ textDecoration: "none",color:"black" }}>
+            <FontAwesomeIcon icon={faAngleRight} />
+          </Link>
+      </div>
+      
     </div>
 );
 };
