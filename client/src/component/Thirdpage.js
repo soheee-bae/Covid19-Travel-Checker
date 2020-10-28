@@ -1,10 +1,15 @@
-import React from "react";
+import React,{useContext} from "react";
 import "../styles/Thirdpage.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {stateContext} from '../App'
+
 const Thirdpage = () => {
+  const {selectedState, setSelectedState} = useContext(stateContext);
+  console.log(selectedState)
+  
   return (
     //This is the Third page. It will have restrictions on travelers who arrive the chosen states.
     //Use the 'styles/Thirdpage.css' to style this page.
