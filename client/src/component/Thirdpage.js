@@ -8,17 +8,15 @@ import {stateContext} from '../App'
 
 const Thirdpage = () => {
   const {selectedState, setSelectedState} = useContext(stateContext);
-  console.log(selectedState)
-  
+
+
   return (
     //This is the Third page. It will have restrictions on travelers who arrive the chosen states.
     //Use the 'styles/Thirdpage.css' to style this page.
     <div className="Thirdpage">
       <div className="mainContent">
-        {
-          /* restrictions here */
           <h1>Restrictions on Travelers</h1>
-        }
+          <h2>{selectedState}</h2>
       </div>
 
       {/*This section is just for the arrow to previous and next pages*/}
