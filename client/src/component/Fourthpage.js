@@ -1,19 +1,21 @@
-import React from "react";
+import React, {useContext}  from "react";
 import "../styles/Fourthpage.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {stateContext} from '../App'
+
 const Fourthpage = () => {
+  const {selectedState, setSelectedState} = useContext(stateContext);
+  
   return (
     //This is the Fourth page. It will have Travel restrictions for chosen state.
     //Use the 'styles/Fourthpage.css' to style this page.
     <div className="Fourthpage">
       <div className="mainContent">
-        {
-          /* Travel restrictions here */
           <h1>Travel Restrictions</h1>
-        }
+          <h2>{selectedState}</h2>
       </div>
 
       {/*This section is just for the arrow to previous and next pages*/}
