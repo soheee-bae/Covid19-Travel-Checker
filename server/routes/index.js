@@ -23,10 +23,16 @@ var Account = mongoose.model("Account", account);
 // create state schema
 var stateData = mongoose.Schema({
    name: String,
-   confirmed: Number,
-   tested: Number,
+
+   positive: Number,
+   negative: Number,
    recovered: Number,
    deaths: Number,
+
+   positiveIncrease: Number,
+   negativeIncrease: Number,
+   deathIncrease: Number,
+
    lastUpdated: String,
    policy: String,
 });
@@ -43,11 +49,18 @@ const fillDB = async () => {
 	for (var x in result.data) {
 		new StateData({
 			name: result.data[x].state,
-			confirmed: result.data[x].positive,
-			tested: result.data[x].positive + result.data[x].negative,
+
+			positive: result.data[x].positive,
+			negative: result.data[x].negative,
 			recovered: result.data[x].recovered,
 			deaths: result.data[x].death,
+
+			positiveIncrease: result.data[x].positiveIncrease,
+			negativeIncrease: result.data[x].negativeIncrease,
+			deathIncrease: result.data[x].deathIncrease,
+
 			lastUpdated:result.data[x].lastUpdateEt,
+
 			policy: "dont get sick"
 		}).save((err, account) => { });
 	}
@@ -157,25 +170,37 @@ router.get('/states/total', (req, res) => {
 	StateData.find({}, (err, docs) => {
 		if (err || docs == null) return res.sendStatus(404);
 
-		let confirmed = 0;
-		let tested = 0;
+		let positive = 0;
+		let negative = 0;
 		let recovered = 0;
 		let deaths = 0;
+
+		let positiveIncrease = 0;
+		let negativeIncrease = 0;
+		let deathIncrease = 0;
 	
 		for (let i in docs) {
 			let doc = docs[i];
-			confirmed += doc.confirmed;
-			
-			tested += doc.tested;
+
+			positive += doc.positive;
+			negative += doc.negative;
 			recovered += doc.recovered;
 			deaths += doc.deaths;
+
+			positiveIncrease += doc.positiveIncrease;
+			negativeIncrease += doc.negativeIncrease;
+			deathIncrease += doc.deathIncrease;
 		}
 
 		return res.status(200).send({
-			confirmed: confirmed,
-			tested: tested,
+			positive: positive,
+			negative: negative,
 			recovered: recovered,
 			deaths: deaths,
+
+			positiveIncrease: positiveIncrease,
+			negativeIncrease: negativeIncrease,
+			deathIncrease: deathIncrease,
 		});
 	});
 });
@@ -185,10 +210,16 @@ router.get('/states/:name', (req, res) => {
 		if (err || doc == null) return res.sendStatus(404);
 		return res.status(200).send({ 
    			name: doc.name,
-   			confirmed: doc.confirmed,
-   			tested: doc.tested,
+
+   			positive: doc.positive,
+   			negative: doc.negative,
    			recovered: doc.recovered,
    			deaths: doc.deaths,
+
+   			positiveIncrease: doc.positiveIncrease,
+   			negativeIncrease: doc.negativeIncrease,
+   			deaths: doc.deathIncrease,
+
 			policy: doc.policy,
 			lastUpdated: doc.lastUpdated,
 		});
