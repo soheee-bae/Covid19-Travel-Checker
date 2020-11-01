@@ -153,6 +153,33 @@ router.post('/register', (req, res) => {
 		.catch((err) => res.sendStatus(404));
 });
 
+router.get('/states/total', (req, res) => {
+	StateData.find({}, (err, docs) => {
+		if (err || docs == null) return res.sendStatus(404);
+
+		let confirmed = 0;
+		let tested = 0;
+		let recovered = 0;
+		let deaths = 0;
+	
+		for (let i in docs) {
+			let doc = docs[i];
+			confirmed += doc.confirmed;
+			
+			tested += doc.tested;
+			recovered += doc.recovered;
+			deaths += doc.deaths;
+		}
+
+		return res.status(200).send({
+			confirmed: confirmed,
+			tested: tested,
+			recovered: recovered,
+			deaths: deaths,
+		});
+	});
+});
+
 router.get('/states/:name', (req, res) => {
 	StateData.findOne({ name: req.params.name }, (err, doc) => {
 		if (err || doc == null) return res.sendStatus(404);
@@ -163,7 +190,7 @@ router.get('/states/:name', (req, res) => {
    			recovered: doc.recovered,
    			deaths: doc.deaths,
 			policy: doc.policy,
-			lastUpdated:doc.lastUpdated,
+			lastUpdated: doc.lastUpdated,
 		});
 	});
 });
