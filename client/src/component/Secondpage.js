@@ -25,82 +25,6 @@ const Secondpage = () => {
   const [stateName, setStateName] = useState(selectState);
   const [stateAbrev, setStateAbrev] = useState("");
 
-  /*
-  const [dateCheckedGraph, setDateCheckedGraph] = useState("");
-  const [positiveGraph, setPositiveGraph] = useState("");
-  const [testedGraph, setTestedGraph] = useState("");
-  const [recoveredGraph, setRecoveredGraph] = useState("");
-  const [deathGraph, setDeathGraph] = useState("");
-
-
-  var x = 0;
-  var stateArray = [
-    "Alaska",
-    "Alabama",
-    "Arkansas",
-    "American Samoa",
-    "Arizona",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "District of Columbia",
-    "Delaware",
-    "Florida",
-    "Georgia",
-    "Guam",
-    "Hawaii",
-    "Iowa",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Massachusetts",
-    "Maryland",
-    "Maine",
-    "Michigan",
-    "Minnesota",
-    "Missouri",
-    "Northern Mariana Islands",
-    "Mississippi",
-    "Montana",
-    "North Carolina",
-    "North Dakota",
-    "Nebraska",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "Nevada",
-    "New York",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Pennsylvania",
-    "Puerto Rico",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Virginia",
-    "Virgin Islands",
-    "Vermont",
-    "Washington",
-    "Wisconsin",
-    "West Virginia",
-    "Wyoming",
-  ];
-
-  var arrayLength = stateArray.length;
-  for (var i = 0; i < arrayLength; i++) {
-    if (stateArray[i] === stateName) {
-      x = i;
-      break;
-    }
-  } */
-
   let data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [
@@ -209,40 +133,9 @@ const Secondpage = () => {
     ]
   };
 
-  function graphIncrease(dataSet,val) {
-      dataSet.datasets.data = [20, 30, 40];
-      return dataSet.datasets.data;
-  }
-
-  /*
-  useEffect(() => {
-    const fetchdata = async () => {
-      const result = await axios(
-        "https://api.covidtracking.com/v1/states/daily.json"
-      );
-      setDashboard(result.data[x]);
-      setDateChecked(result.data[x].dateChecked);
-      setPositive(result.data[x].positive);
-      setTested(result.data[x].positive + result.data[x].negative);
-      setRecovered(result.data[x].recovered);
-      setDeath(result.data[x].death);
-      setStateAbrev(result.data[x].stateAbrev);
-
-      setDateCheckedGraph(result.data[x].dateCheckedGraph);
-      setPositiveGraph(result.data[x].positiveGraph);
-      setTestedGraph(result.data[x].positiveGraph + result.data[x].negativeGraph);
-      setRecoveredGraph(result.data[x].recoveredGraph);
-      setDeathGraph(result.data[x].deathGraph); 
-      
-    };
-    
-    const savedata = () => {};
-    fetchdata();
-    savedata();
-  }, []); */
   let abbrev = new Map();
   abbrev["Alabama"] = "AL";
-  abbrev["Alaska"] = " AK";
+  abbrev["Alaska"] = "AK";
   abbrev["American Samoa"] = "AS";
   abbrev["Arizona"] = "AZ";
   abbrev["Arkansas"] = "AR";
@@ -301,6 +194,7 @@ const Secondpage = () => {
   useEffect(() => {
     const fetchdata = async () => {
       const result = await axios("http://localhost:3500/states/" + abbrev[stateName]);
+      //const result = await axios("http://localhost:3500/states/" + "AK");
       //setDashboard(result.data); 
       console.log(result);
       setDateChecked(result.data.lastUpdated);
@@ -330,7 +224,7 @@ const Secondpage = () => {
           <div className='updatedTime'>{dateChecked}</div>
           <div className='detail-data-area'>
           <div className='StateConfirmed'>
-            <h3 className='detail-data-list'>Confirmed</h3>
+            <h3 className='detail-data-list'>Confirmed</h3> 
             <CountUp end={positive} start={0} duration={4} separator="," />
           </div>
           <div className='StateTested'>

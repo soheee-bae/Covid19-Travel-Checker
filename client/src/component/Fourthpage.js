@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import {stateContext} from '../App'
+import restrictions from "../restrictions/restrictions.json";
 
 const Fourthpage = () => {
   const {selectedState, setSelectedState} = useContext(stateContext);

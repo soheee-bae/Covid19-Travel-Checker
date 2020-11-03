@@ -20,6 +20,20 @@ body {
 .right-arrow-icon {
   font-size: 30px;
 }
+
+.StateConfirmed {
+  color: #ff073a;
+}
+.StateTested {
+  color: #007bff;
+}
+.StateDeaths {
+  color: #707070;
+}
+.StateRecovered {
+  color: #28a745;
+}
+
 .mainContent-area {
   display: flex;
   flex-direction: column;
