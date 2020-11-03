@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import {stateContext} from '../App'
+import restrictions from "../restrictions/restrictions.json";
 
 const Thirdpage = () => {
   const {selectedState, setSelectedState} = useContext(stateContext);
-
 
   return (
     //This is the Third page. It will have restrictions on travelers who arrive the chosen states.
