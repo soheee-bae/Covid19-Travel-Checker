@@ -3,6 +3,7 @@ import {Line} from 'react-chartjs-2';
 import "../styles/Secondpage.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -22,6 +23,10 @@ const Secondpage = () => {
   const [tested, setTested] = useState("");
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
+  const [positiveIncrease, setpositiveIncrease] = useState("");
+  const [testedIncrease, settestedIncrease] = useState("");
+  const [recoveredIncrease, setrecoveredIncrease] = useState("");
+  const [deathIncrease, setdeathIncrease] = useState("");
   const [stateName, setStateName] = useState(selectState);
   const [stateAbrev, setStateAbrev] = useState("");
 
@@ -198,11 +203,15 @@ const Secondpage = () => {
       //setDashboard(result.data); 
       console.log(result);
       setDateChecked(result.data.lastUpdated);
-      setPositive(result.data.confirmed);
-      setTested(result.data.tested);
+      setPositive(result.data.positive);
+      setTested(result.data.negative);
       setRecovered(result.data.recovered);
       setDeath(result.data.deaths);
       setStateAbrev(abbrev[stateName]);
+      setpositiveIncrease(result.data.positiveIncrease); 
+      settestedIncrease(result.data.negativeIncrease);
+      setrecoveredIncrease();
+      setdeathIncrease(result.data.deathIncrease);
       //setStateName(result.data[0].state);
     };
     const savedata = () => {};
@@ -225,18 +234,34 @@ const Secondpage = () => {
           <div className='detail-data-area'>
           <div className='StateConfirmed'>
             <h3 className='detail-data-list'>Confirmed</h3> 
+            <div className="Confirmed-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {positiveIncrease}
+              </div>
             <CountUp end={positive} start={0} duration={4} separator="," />
           </div>
           <div className='StateTested'>
             <h3 className='detail-data-list'>Tested</h3>
+            <div className="Tested-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {testedIncrease}
+              </div>
             <CountUp end={tested} start={0} duration={4} separator="," />
           </div>
           <div className='StateRecovered'>
             <h3 className='detail-data-list'>Recovered</h3>
+            <div className="Recovered-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {recoveredIncrease}
+              </div>
             <CountUp end={recovered} start={0} duration={4} separator="," />
           </div>
           <div className='StateDeaths'>
             <h3 className='detail-data-list'>Deaths</h3>
+            <div className="Death-increased">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {deathIncrease}
+              </div>
             <CountUp end={death} start={0} duration={4} separator="," />
           </div>
         </div>

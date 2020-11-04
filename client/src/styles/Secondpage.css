@@ -34,6 +34,28 @@ body {
   color: #28a745;
 }
 
+.Confirmed-increased {
+  color: rgba(255, 7, 58, 0.6);
+  margin-bottom: 1rem;
+  font-size: 15px;
+}
+.Tested-increased {
+  color: rgba(7, 32, 255, 0.6);
+  margin-bottom: 1rem;
+  font-size: 15px;
+}
+.Death-increased {
+  color: rgba(108, 117, 125, 0.6);
+  margin-bottom: 1rem;
+  font-size: 15px;
+}
+
+.Recovered-increased {
+  font-size: 15px;
+  margin-bottom: 1rem;
+  color: #66ff33;
+}
+
 .mainContent-area {
   display: flex;
   flex-direction: column;
