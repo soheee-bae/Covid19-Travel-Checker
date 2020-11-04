@@ -12,12 +12,18 @@ const Navbar = () => {
   const {webtoken} = useContext(covidContext);
   const [webToken, setWebToken] = webtoken;
   const [sidebar, setSidebar] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
 
   const handleSignout=()=>{
     window.localStorage.clear('webtoken')
     window.localStorage.clear('dataInfo')
     setWebToken("")
+    window.location='/'
+  }
+
+  if (redirect === true) {
+    return <Redirect to="/" />;
   }
 
 

@@ -97,15 +97,17 @@ const Home = (props) => {
   useEffect(() => {
     setSelectedState("")
     const fetchdata = async () => {
-      const result = await axios(
-        "https://api.covidtracking.com/v1/us/current.json"
+      const result = await axios.get(
+        "http://localhost:3500/states/total"
       );
-      setDashboard(result.data[0]);
-      setDateChecked(result.data[0].dateChecked);
-      setPositive(result.data[0].positive);
-      setTested(result.data[0].positive + result.data[0].negative);
-      setRecovered(result.data[0].recovered);
-      setDeath(result.data[0].death);
+        console.log(result)
+      setPositive(result.data.positive);
+      setTested(result.data.negative + result.data.positive);
+      setRecovered(result.data.recovered);
+      setDeath(result.data.deaths);
+
+      setDashboard(result.data);
+  //    setDateChecked(result.data[0].dateChecked);
     };
     const savedata = () => {};
     fetchdata();
@@ -130,7 +132,7 @@ const Home = (props) => {
       <div className="mainContent-area">
         <div className="title-container">
           <p className="homepage-title">UNITED STATES</p>
-          <p className="dateupdated-US">{dateChecked}</p>
+          
         </div>
         <div className="US-Covid-data">
           <div className="US-Covid-data-first">
@@ -152,7 +154,7 @@ const Home = (props) => {
               <p className="Tested-subtitle">Tested</p>
               <div className="Tested-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-                {dashboard.totalTestResultsIncrease}
+                {dashboard.positiveIncrease+dashboard.negativeIncrease}
               </div>
               <CountUp
                 className="Countup-data"
@@ -166,7 +168,9 @@ const Home = (props) => {
           <div className="US-Covid-data-second">
             <div className="Recovered-US">
               <p className="Recovered-subtitle">Recovered</p>
-              <div className="Recovered-increased"> ..</div>
+              <div className="Recovered-increased ">
+                <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
+                {dashboard.recovered}</div>
               <CountUp
                 className="Countup-data"
                 end={recovered}

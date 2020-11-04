@@ -180,6 +180,7 @@ router.get('/states/total', (req, res) => {
 		let negativeIncrease = 0;
 		let recoveredIncrease = 0;
 		let deathIncrease = 0;
+
 	
 		for (let i in docs) {
 			let doc = docs[i];
@@ -220,9 +221,10 @@ router.get('/states/:name', (req, res) => {
    			recovered: doc.recovered,
    			deaths: doc.deaths,
 
+			deathIncrease: doc.deathIncrease,
    			positiveIncrease: doc.positiveIncrease,
    			negativeIncrease: doc.negativeIncrease,
-   			deaths: doc.deathIncrease,
+   			
 
 			policy: doc.policy,
 			lastUpdated: doc.lastUpdated,
