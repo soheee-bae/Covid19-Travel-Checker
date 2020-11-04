@@ -57,6 +57,7 @@ const fillDB = async () => {
 
 			positiveIncrease: result.data[x].positiveIncrease,
 			negativeIncrease: result.data[x].negativeIncrease,
+			recoveredIncrease: result.data[x].recoveredIncrease,
 			deathIncrease: result.data[x].deathIncrease,
 
 			lastUpdated:result.data[x].lastUpdateEt,
@@ -177,6 +178,7 @@ router.get('/states/total', (req, res) => {
 
 		let positiveIncrease = 0;
 		let negativeIncrease = 0;
+		let recoveredIncrease = 0;
 		let deathIncrease = 0;
 	
 		for (let i in docs) {
@@ -189,6 +191,7 @@ router.get('/states/total', (req, res) => {
 
 			positiveIncrease += doc.positiveIncrease;
 			negativeIncrease += doc.negativeIncrease;
+			recoveredIncrease += doc.recovered;
 			deathIncrease += doc.deathIncrease;
 		}
 
@@ -200,6 +203,7 @@ router.get('/states/total', (req, res) => {
 
 			positiveIncrease: positiveIncrease,
 			negativeIncrease: negativeIncrease,
+			recoveredIncrease: recovered,
 			deathIncrease: deathIncrease,
 		});
 	});
