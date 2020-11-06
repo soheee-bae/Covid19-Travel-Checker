@@ -1,0 +1,10 @@
+.Testsitepage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 3rem;
+  text-align: center;
+  align-content: center;
+  align-items: center;
+  margin: 5%;
+}
