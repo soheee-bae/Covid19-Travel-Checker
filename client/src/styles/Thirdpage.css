@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Quicksand", sans-serif;
+    background-color: #f8f9fa;
+  }
+  
+  .Thirdpage {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3rem;
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    margin: 5%;
+  }
+
+  .mainContent-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 4rem;
+  }
+
+.left-arrow-icon,
+.right-arrow-icon {
+  font-size: 30px;
+}
