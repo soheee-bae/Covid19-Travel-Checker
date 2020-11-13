@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken');
 var axios = require('axios');
 
 var router = express.Router();
-router.use(express.json());
+//router.use(express.json());
 
 const jwtKey = "0f9841176d94679a9ba9c9165ceb713e73c5de54c461ac3bf1a9545c26504fae3a6e3cb9f1b1652f5422777c6a4b82e5bd299bffb45aa71cbac273c39c5d3965";
 
@@ -44,131 +44,137 @@ Account.remove({}, (req, result) => { });
 StateData.remove({}, (req, result) => { });
 
 // insert state data 
-const fillDB = async () => {
+const fillDatabase = async () => {
 	result = await axios("https://api.covidtracking.com/v1/states/current.json");
-	for (var x in result.data) {
-		new StateData({
-			name: result.data[x].state,
+	result.data.map(async (state) => {
+		await new StateData({
+			name: state.state,
 
-			positive: result.data[x].positive,
-			negative: result.data[x].negative,
-			recovered: result.data[x].recovered,
-			deaths: result.data[x].death,
+			positive: state.positive,
+			negative: state.negative,
+			recovered: state.recovered,
+			deaths: state.death,
 
-			positiveIncrease: result.data[x].positiveIncrease,
-			negativeIncrease: result.data[x].negativeIncrease,
-			recoveredIncrease: result.data[x].recoveredIncrease,
-			deathIncrease: result.data[x].deathIncrease,
+			positiveIncrease: state.positiveIncrease,
+			negativeIncrease: state.negativeIncrease,
+			recoveredIncrease: state.recoveredIncrease,
+			deathIncrease: state.deathIncrease,
 
-			lastUpdated:result.data[x].lastUpdateEt,
+			lastUpdated: state.lastUpdateEt,
 
 			policy: "dont get sick"
-		}).save((err, account) => { });
-	}
+		}).save()
+	})
 }
-fillDB()
+fillDatabase()
 
 router.post('/login', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
+	let login = async (username, password) => {
+		// verify username/password are not null
+		if (username == null || password == null)
+			return Promise.reject("InvalidUsernameOrPassword");
 
-	if (username == null || password == null)
-		return res.sendStatus(404);
+		// extract password/salt for this username
+		let [dbhash, salt] = await Account.findOne({ username: username })
+			.then((doc) => {
+				if (doc == null) return Promise.reject("UsernameDoesNotExist")
+				else return Promise.resolve([doc.password, doc.salt]);
+			})
 
-	const extractData = () => new Promise((resolve, reject) => {
-		Account.findOne({ username: username }, (err, doc) => {
-			if (err) return reject(err);
-			if (doc == null) return reject("Username does not exist")
-			return resolve([doc.password, doc.salt]);
-		});
-	});
+		// generate hash from password/salt
+		let hash = await bcrypt.hash(password, salt)
+			.catch((_) => Promise.reject("HashError"));
 
-	const hash = ([dbhash, salt]) => new Promise((resolve, reject) => {
-		bcrypt.hash(password, salt, (err, hash) => {
-			if (err) return reject(err);
-			return resolve([dbhash, hash]);
-		});
-	});
+		// compare generated hash to stored hash
+		if (dbhash != hash)
+			return Promise.reject("IncorrectPassword");
 
-	const compare = ([dbhash, hash]) => new Promise((resolve, reject) => {
-		if (dbhash != hash) return reject( "Incorrect password");
-		return resolve(null);
-	});
+		// return jwt
+		return Promise.resolve(jwt.sign({ username }, jwtKey));
+	}
 
-	const genJwt = (_) => new Promise((resolve, reject) => {
-		console.log("genJwt");
-		return resolve(jwt.sign({ username }, jwtKey));
-	});
+	// generate response
+	login(req.body.username, req.body.password)
+		.then((jwt) => res.status(200).send(jwt))
+		.catch((err) => res.status(404).send(err));
 
-	const respond = (jwt) => new Promise((resolve, reject) => {
-		console.log("respond");
-		res.status(200).send(jwt);
-		return resolve(null);
-	});
-
-	extractData()
-		.then(hash)
-		.then(compare)
-		.then(genJwt)
-		.then(respond)
-		.catch((err) => res.sendStatus(404));
+	return
 });
 
 router.post('/register', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
+	let register = async (username, password) => {
+		// verify username/password are not null
+		if (username == null || password == null)
+			return Promise.reject("InvalidUsernameOrPassword");
 
-	if (username == null || password == null)
-		return res.sendStatus(404);
+		// verify username does not already exist
+		await Account.findOne({ username: username })
+			.then((u) => { if (u != null) return Promise.reject("UsernameAlreadyExists") });
 
-	const verifyUnique = () => new Promise((resolve, reject) => {
-		Account.findOne({username: username}, (err, doc) => {
-			if (err) return reject(err);
-			if (doc != null) return reject("Username already exists");
-			return resolve(null);
-		});
-	});
+		// generate salt
+		let salt = await bcrypt.genSalt(10)
+			.catch((_) => Promise.reject("SaltError"));
 
-	const hash = (salt) => new Promise((resolve, reject) => {
-		bcrypt.genSalt(10, (err, salt) => {
-			if (err) return reject(err);
-			bcrypt.hash(password, salt, (err, hash) => {
-				if (err) return reject(err);
-				return resolve([hash, salt]);
-			});
-		});
-	});
+		// generate hash from password/salt
+		let hash = await bcrypt.hash(password, salt)
+			.catch((_) => Promise.reject("HashError"));
 
-	const dbInsert = ([hash, salt]) => new Promise((resolve, reject) => {
-		return new Account({
+		// insert username/hash/salt into db
+		await new Account({
 			username: username,
 			password: hash,
 			salt: salt,
-		}).save((err, account) => {
-			if (err) return reject(err);
-			return resolve(null);
-		});
-	});
+		}).save()
+			.catch((_) => Promise.reject("DBInsertError"));
 
-	const genJwt = (_) => new Promise((resolve, reject) => {
-		return resolve(jwt.sign({ username }, jwtKey));
-	});
+		// return jwt
+		return Promise.resolve(jwt.sign({ username }, jwtKey));
+	}
 
-	const respond = (jwt) => new Promise((resolve, reject) => {
-		res.status(200).send(jwt);
-		return resolve(null);
-	});
+	// generate response
+	register(req.body.username, req.body.password)
+		.then((jwt) => res.status(200).send(jwt))
+		.catch((err) => res.status(404).send(err));
 
-	verifyUnique(username)
-		.then(hash)
-		.then(dbInsert)
-		.then(genJwt)
-		.then(respond)
-		.catch((err) => res.sendStatus(404));
+	return;
 });
 
 router.get('/states/total', (req, res) => {
-	StateData.find({}, (err, docs) => {
+	let total = async () => {
+		let states = await StateData.find({});
+		let final = states.reduce((acc, doc) => {
+			acc.positive += doc.positive;
+			acc.negative += doc.negative;
+			acc.recovered += doc.recovered;
+			acc.deaths += doc.deaths;
+			acc.positiveIncrease += doc.positiveIncrease;
+			acc.negativeIncrease += doc.negativeIncrease;
+			acc.recoveredIncrease += doc.recoveredIncrease;
+			acc.deathIncrease += doc.deathIncrease;
+			return acc;
+		});
+
+		return Promise.resolve({
+			positive: final.positive,
+			negative: final.negative,
+			recovered: final.recovered,
+			deaths: final.deaths,
+			positiveIncrease: final.positiveIncrease,
+			negativeIncrease: final.negativeIncrease,
+			recoveredIncrease: final.recoveredIncrease,
+			deathIncrease: final.deathIncrease,
+		});
+	}
+
+	total()
+		.then((total) => res.status(200).send(total))
+		.catch((_) => res.status(404).send(null));
+
+	return;
+
+
+
+	/*StateData.find({}, (err, docs) => {
 		if (err || docs == null) return res.sendStatus(404);
 
 		let positive = 0;
@@ -207,7 +213,7 @@ router.get('/states/total', (req, res) => {
 			recoveredIncrease: recovered,
 			deathIncrease: deathIncrease,
 		});
-	});
+	});*/
 });
 
 router.get('/states/:name', (req, res) => {
