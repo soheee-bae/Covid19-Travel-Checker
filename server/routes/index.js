@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken');
 var axios = require('axios');
 
 var router = express.Router();
-router.use(express.json());
+//router.use(express.json());
 
 const jwtKey = "0f9841176d94679a9ba9c9165ceb713e73c5de54c461ac3bf1a9545c26504fae3a6e3cb9f1b1652f5422777c6a4b82e5bd299bffb45aa71cbac273c39c5d3965";
 
@@ -91,7 +91,7 @@ router.post('/login', (req, res) => {
 	});
 
 	const compare = ([dbhash, hash]) => new Promise((resolve, reject) => {
-		if (dbhash != hash) return reject( "Incorrect password");
+		if (dbhash	 != hash) return reject( "Incorrect password");
 		return resolve(null);
 	});
 
@@ -115,56 +115,41 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
+	let register = async (username, password) => {
+		// verify username/password are not null
+		if (username == null || password == null)
+			return Promise.reject("InvalidUsernameOrPassword");
 
-	if (username == null || password == null)
-		return res.sendStatus(404);
+		// verify username does not already exist
+		await Account.findOne({ username: username })
+			.then((u) => { if (u != null) return Promise.reject("UsernameAlreadyExists") });
 
-	const verifyUnique = () => new Promise((resolve, reject) => {
-		Account.findOne({username: username}, (err, doc) => {
-			if (err) return reject(err);
-			if (doc != null) return reject("Username already exists");
-			return resolve(null);
-		});
-	});
+		// generate salt
+		let salt = await bcrypt.genSalt(10)
+			.catch((_) => Promise.reject("SaltError"));
 
-	const hash = (salt) => new Promise((resolve, reject) => {
-		bcrypt.genSalt(10, (err, salt) => {
-			if (err) return reject(err);
-			bcrypt.hash(password, salt, (err, hash) => {
-				if (err) return reject(err);
-				return resolve([hash, salt]);
-			});
-		});
-	});
+		// generate hash from password/salt
+		let hash = await bcrypt.hash(password, salt)
+			.catch((_) => Promise.reject("HashError"));
 
-	const dbInsert = ([hash, salt]) => new Promise((resolve, reject) => {
-		return new Account({
+		// insert username/hash/salt into db
+		await new Account({
 			username: username,
 			password: hash,
 			salt: salt,
-		}).save((err, account) => {
-			if (err) return reject(err);
-			return resolve(null);
-		});
-	});
+		}).save()
+			.catch((_) => Promise.reject("DBInsertError"));
 
-	const genJwt = (_) => new Promise((resolve, reject) => {
-		return resolve(jwt.sign({ username }, jwtKey));
-	});
+		// return jwt
+		return Promise.resolve(jwt.sign({ username }, jwtKey));
+	}
 
-	const respond = (jwt) => new Promise((resolve, reject) => {
-		res.status(200).send(jwt);
-		return resolve(null);
-	});
+	// generate response
+	register(req.body.username, req.body.password)
+		.then((jwt) => res.status(200).send(jwt))
+		.catch((err) => res.status(404).send(err));
 
-	verifyUnique(username)
-		.then(hash)
-		.then(dbInsert)
-		.then(genJwt)
-		.then(respond)
-		.catch((err) => res.sendStatus(404));
+	return;
 });
 
 router.get('/states/total', (req, res) => {
