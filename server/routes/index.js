@@ -69,49 +69,36 @@ const fillDB = async () => {
 fillDB()
 
 router.post('/login', (req, res) => {
-	var username = req.body.username;
-	var password = req.body.password;
+	let login = async (username, password) => {
+		// verify username/password are not null
+		if (username == null || password == null)
+			return Promise.reject("InvalidUsernameOrPassword");
 
-	if (username == null || password == null)
-		return res.sendStatus(404);
+		// extract password/salt for this username
+		let [dbhash, salt] = await Account.findOne({ username: username })
+			.then((doc) => {
+				if (doc == null) return Promise.reject("UsernameDoesNotExist")
+				else return Promise.resolve([doc.password, doc.salt]);
+			})
 
-	const extractData = () => new Promise((resolve, reject) => {
-		Account.findOne({ username: username }, (err, doc) => {
-			if (err) return reject(err);
-			if (doc == null) return reject("Username does not exist")
-			return resolve([doc.password, doc.salt]);
-		});
-	});
+		// generate hash from password/salt
+		let hash = await bcrypt.hash(password, salt)
+			.catch((_) => Promise.reject("HashError"));
 
-	const hash = ([dbhash, salt]) => new Promise((resolve, reject) => {
-		bcrypt.hash(password, salt, (err, hash) => {
-			if (err) return reject(err);
-			return resolve([dbhash, hash]);
-		});
-	});
+		// compare generated hash to stored hash
+		if (dbhash != hash)
+			return Promise.reject("IncorrectPassword");
 
-	const compare = ([dbhash, hash]) => new Promise((resolve, reject) => {
-		if (dbhash	 != hash) return reject( "Incorrect password");
-		return resolve(null);
-	});
+		// return jwt
+		return Promise.resolve(jwt.sign({ username }, jwtKey));
+	}
 
-	const genJwt = (_) => new Promise((resolve, reject) => {
-		console.log("genJwt");
-		return resolve(jwt.sign({ username }, jwtKey));
-	});
+	// generate response
+	login(req.body.username, req.body.password)
+		.then((jwt) => res.status(200).send(jwt))
+		.catch((err) => res.status(404).send(err));
 
-	const respond = (jwt) => new Promise((resolve, reject) => {
-		console.log("respond");
-		res.status(200).send(jwt);
-		return resolve(null);
-	});
-
-	extractData()
-		.then(hash)
-		.then(compare)
-		.then(genJwt)
-		.then(respond)
-		.catch((err) => res.sendStatus(404));
+	return
 });
 
 router.post('/register', (req, res) => {
