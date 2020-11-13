@@ -44,29 +44,29 @@ Account.remove({}, (req, result) => { });
 StateData.remove({}, (req, result) => { });
 
 // insert state data 
-const fillDB = async () => {
+const fillDatabase = async () => {
 	result = await axios("https://api.covidtracking.com/v1/states/current.json");
-	for (var x in result.data) {
-		new StateData({
-			name: result.data[x].state,
+	result.data.map(async (state) => {
+		await new StateData({
+			name: state.state,
 
-			positive: result.data[x].positive,
-			negative: result.data[x].negative,
-			recovered: result.data[x].recovered,
-			deaths: result.data[x].death,
+			positive: state.positive,
+			negative: state.negative,
+			recovered: state.recovered,
+			deaths: state.death,
 
-			positiveIncrease: result.data[x].positiveIncrease,
-			negativeIncrease: result.data[x].negativeIncrease,
-			recoveredIncrease: result.data[x].recoveredIncrease,
-			deathIncrease: result.data[x].deathIncrease,
+			positiveIncrease: state.positiveIncrease,
+			negativeIncrease: state.negativeIncrease,
+			recoveredIncrease: state.recoveredIncrease,
+			deathIncrease: state.deathIncrease,
 
-			lastUpdated:result.data[x].lastUpdateEt,
+			lastUpdated: state.lastUpdateEt,
 
 			policy: "dont get sick"
-		}).save((err, account) => { });
-	}
+		}).save()
+	})
 }
-fillDB()
+fillDatabase()
 
 router.post('/login', (req, res) => {
 	let login = async (username, password) => {
@@ -140,7 +140,41 @@ router.post('/register', (req, res) => {
 });
 
 router.get('/states/total', (req, res) => {
-	StateData.find({}, (err, docs) => {
+	let total = async () => {
+		let states = await StateData.find({});
+		let final = states.reduce((acc, doc) => {
+			acc.positive += doc.positive;
+			acc.negative += doc.negative;
+			acc.recovered += doc.recovered;
+			acc.deaths += doc.deaths;
+			acc.positiveIncrease += doc.positiveIncrease;
+			acc.negativeIncrease += doc.negativeIncrease;
+			acc.recoveredIncrease += doc.recoveredIncrease;
+			acc.deathIncrease += doc.deathIncrease;
+			return acc;
+		});
+
+		return Promise.resolve({
+			positive: final.positive,
+			negative: final.negative,
+			recovered: final.recovered,
+			deaths: final.deaths,
+			positiveIncrease: final.positiveIncrease,
+			negativeIncrease: final.negativeIncrease,
+			recoveredIncrease: final.recoveredIncrease,
+			deathIncrease: final.deathIncrease,
+		});
+	}
+
+	total()
+		.then((total) => res.status(200).send(total))
+		.catch((_) => res.status(404).send(null));
+
+	return;
+
+
+
+	/*StateData.find({}, (err, docs) => {
 		if (err || docs == null) return res.sendStatus(404);
 
 		let positive = 0;
@@ -179,7 +213,7 @@ router.get('/states/total', (req, res) => {
 			recoveredIncrease: recovered,
 			deathIncrease: deathIncrease,
 		});
-	});
+	});*/
 });
 
 router.get('/states/:name', (req, res) => {
