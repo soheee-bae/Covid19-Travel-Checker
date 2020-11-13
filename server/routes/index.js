@@ -171,49 +171,6 @@ router.get('/states/total', (req, res) => {
 		.catch((_) => res.status(404).send(null));
 
 	return;
-
-
-
-	/*StateData.find({}, (err, docs) => {
-		if (err || docs == null) return res.sendStatus(404);
-
-		let positive = 0;
-		let negative = 0;
-		let recovered = 0;
-		let deaths = 0;
-
-		let positiveIncrease = 0;
-		let negativeIncrease = 0;
-		let recoveredIncrease = 0;
-		let deathIncrease = 0;
-
-	
-		for (let i in docs) {
-			let doc = docs[i];
-
-			positive += doc.positive;
-			negative += doc.negative;
-			recovered += doc.recovered;
-			deaths += doc.deaths;
-
-			positiveIncrease += doc.positiveIncrease;
-			negativeIncrease += doc.negativeIncrease;
-			recoveredIncrease += doc.recovered;
-			deathIncrease += doc.deathIncrease;
-		}
-
-		return res.status(200).send({
-			positive: positive,
-			negative: negative,
-			recovered: recovered,
-			deaths: deaths,
-
-			positiveIncrease: positiveIncrease,
-			negativeIncrease: negativeIncrease,
-			recoveredIncrease: recovered,
-			deathIncrease: deathIncrease,
-		});
-	});*/
 });
 
 router.get('/states/:name', (req, res) => {
