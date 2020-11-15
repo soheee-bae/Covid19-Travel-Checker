@@ -15,26 +15,15 @@ const Testsitepage = () => {
   const [Counties, setCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   var CountiesList = [];
-  var filteredSites = [];
 
-  console.log(tempSites);
-  console.log(selectedCounty);
   const handleSearchbarSubmit = (search) => {
+    setSelectedCounty(search.value);
     setTempSites(
       sites.filter(
         (data) => data.County.toLowerCase() === search.value.toLowerCase()
       )
     );
   };
-  /*  sites.forEach((site) => {
-      if (site.County === selectedCounty) {
-        console.log(selectedCounty);
-        filteredSites.push({ site });
-        console.log(site);
-      } else {
-        return null;
-      }
-    });*/
 
   useEffect(() => {
     Testsite.map((testsite) => {
