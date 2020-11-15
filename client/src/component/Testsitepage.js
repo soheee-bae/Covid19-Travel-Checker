@@ -6,26 +6,41 @@ import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import Testsite from "../testsite/Testsite.json";
 import Select from "react-select";
 import { stateContext } from "../App";
+import { FaSearchengin } from "react-icons/fa";
 
 const Testsitepage = () => {
   const { selectedState, setSelectedState } = useContext(stateContext);
-  const [testsites, setTestsites] = useState({});
   const [sites, setSites] = useState([]);
+  const [tempSites, setTempSites] = useState([]);
   const [Counties, setCounties] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   var CountiesList = [];
-  console.log(selectedCounty);
+  var filteredSites = [];
 
-  const handleSearchCounties = (option) => {
-    setSelectedCounty(option.value);
-    return option;
+  console.log(tempSites);
+  console.log(selectedCounty);
+  const handleSearchbarSubmit = (search) => {
+    setTempSites(
+      sites.filter(
+        (data) => data.County.toLowerCase() === search.value.toLowerCase()
+      )
+    );
   };
+  /*  sites.forEach((site) => {
+      if (site.County === selectedCounty) {
+        console.log(selectedCounty);
+        filteredSites.push({ site });
+        console.log(site);
+      } else {
+        return null;
+      }
+    });*/
 
   useEffect(() => {
     Testsite.map((testsite) => {
       if (testsite.State === selectedState) {
-        setTestsites(testsite);
         setSites(testsite.Testsite);
+        setTempSites(testsite.Testsite);
         setCounties(testsite.Counties);
       } else {
         return null;
@@ -117,23 +132,25 @@ const Testsitepage = () => {
             openMenuOnClick={false}
             className="counties-search-bar"
             styles={SearchbarStyle}
-            onChange={handleSearchCounties}
+            onChange={handleSearchbarSubmit}
           />
         </div>
         <div className="output-for-testing-site">
-          <ul className="testingsite-card">
-            {sites &&
-              sites.map((site, index) => (
-                <ol className="testingsite-list" key={index}>
-                  <div className="testingsite-info">
-                    <p className="testingsite-name">{site.Name}</p>
-                    <p className="testingsite-address">{site.Address}</p>
-                    <p className="testingsite-Phone">{site.Phone}</p>
-                    <p className="testingsite-Hours">{site.Hours}</p>
-                  </div>
-                </ol>
-              ))}
-          </ul>
+          {selectedCounty ? null : (
+            <ul className="testingsite-card">
+              {tempSites &&
+                tempSites.map((site, index) => (
+                  <ol className="testingsite-list" key={index}>
+                    <div className="testingsite-info">
+                      <p className="testingsite-name">{site.Name}</p>
+                      <p className="testingsite-address">{site.Address}</p>
+                      <p className="testingsite-Phone">{site.Phone}</p>
+                      <p className="testingsite-Hours">{site.Hours}</p>
+                    </div>
+                  </ol>
+                ))}
+            </ul>
+          )}
         </div>
       </div>
       <div className="right-arrow-icon">
@@ -142,5 +159,4 @@ const Testsitepage = () => {
     </div>
   );
 };
-
 export default Testsitepage;
