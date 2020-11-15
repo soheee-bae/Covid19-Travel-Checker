@@ -3,21 +3,20 @@ import "../styles/Testsitepage.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import Testsite from "../testsite/Testsite.json";
 import Select from "react-select";
 import { stateContext } from "../App";
-import { FaSearchengin } from "react-icons/fa";
+import axios from "axios";
 
 const Testsitepage = () => {
   const { selectedState, setSelectedState } = useContext(stateContext);
   const [sites, setSites] = useState([]);
   const [tempSites, setTempSites] = useState([]);
   const [Counties, setCounties] = useState([]);
-  const [selectedCounty, setSelectedCounty] = useState("");
   var CountiesList = [];
 
+  console.log(tempSites);
   const handleSearchbarSubmit = (search) => {
-    setSelectedCounty(search.value);
+    console.log(search.value);
     setTempSites(
       sites.filter(
         (data) => data.County.toLowerCase() === search.value.toLowerCase()
@@ -26,15 +25,27 @@ const Testsitepage = () => {
   };
 
   useEffect(() => {
-    Testsite.map((testsite) => {
-      if (testsite.State === selectedState) {
-        setSites(testsite.Testsite);
-        setTempSites(testsite.Testsite);
-        setCounties(testsite.Counties);
+    const fetchdata = async () => {
+      const Testsite = await axios.get("http://localhost:3500/testsites", {
+        withCredentials: true,
+        validateStatus: () => true,
+      });
+
+      if (Testsite.status === 200) {
+        Testsite.data.map((testsite) => {
+          if (testsite.State === selectedState) {
+            setSites(testsite.Testsite);
+            setTempSites(testsite.Testsite);
+            setCounties(testsite.Counties);
+          } else {
+            return null;
+          }
+        });
       } else {
-        return null;
+        console.log("error!");
       }
-    });
+    };
+    fetchdata();
   }, []);
 
   const SearchbarStyle = {
@@ -125,21 +136,19 @@ const Testsitepage = () => {
           />
         </div>
         <div className="output-for-testing-site">
-          {selectedCounty ? null : (
-            <ul className="testingsite-card">
-              {tempSites &&
-                tempSites.map((site, index) => (
-                  <ol className="testingsite-list" key={index}>
-                    <div className="testingsite-info">
-                      <p className="testingsite-name">{site.Name}</p>
-                      <p className="testingsite-address">{site.Address}</p>
-                      <p className="testingsite-Phone">{site.Phone}</p>
-                      <p className="testingsite-Hours">{site.Hours}</p>
-                    </div>
-                  </ol>
-                ))}
-            </ul>
-          )}
+          <ul className="testingsite-card">
+            {tempSites &&
+              tempSites.map((site, index) => (
+                <ol className="testingsite-list" key={index}>
+                  <div className="testingsite-info">
+                    <p className="testingsite-name">{site.Name}</p>
+                    <p className="testingsite-address">{site.Address}</p>
+                    <p className="testingsite-Phone">{site.Phone}</p>
+                    <p className="testingsite-Hours">{site.Hours}</p>
+                  </div>
+                </ol>
+              ))}
+          </ul>
         </div>
       </div>
       <div className="right-arrow-icon">

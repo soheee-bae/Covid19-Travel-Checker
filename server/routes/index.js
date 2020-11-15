@@ -40,6 +40,7 @@ var stateData = mongoose.Schema({
 var StateData = mongoose.model("StateData", stateData);
 
 //create testsite schema
+let Schema = mongoose.Schema;
 var TestSite = mongoose.model("TestSite", new Schema({}), "testsite");
 
 // clear database (testing)
