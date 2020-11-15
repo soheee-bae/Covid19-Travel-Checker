@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import "../styles/Testsitepage.css";
+import Testsite from "../Testsite/Testsite.json";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -8,14 +9,12 @@ import { stateContext } from "../App";
 import axios from "axios";
 
 const Testsitepage = () => {
-  //const { selectedState, setSelectedState } = useContext(stateContext);
-  const selectedState = "Alabama";
+  const { selectedState, setSelectedState } = useContext(stateContext);
   const [sites, setSites] = useState([]);
   const [tempSites, setTempSites] = useState([]);
   const [Counties, setCounties] = useState([]);
   var CountiesList = [];
 
-  console.log(tempSites);
   const handleSearchbarSubmit = (search) => {
     console.log(search.value);
     setTempSites(
@@ -26,27 +25,29 @@ const Testsitepage = () => {
   };
 
   useEffect(() => {
-    const fetchdata = async () => {
-      const Testsite = await axios.get("http://localhost:3500/testsites", {
-        withCredentials: true,
-        validateStatus: () => true,
-      });
-
-      if (Testsite.status === 200) {
-        Testsite.data.map((testsite) => {
-          if (testsite.State === selectedState) {
-            setSites(testsite.Testsite);
-            setTempSites(testsite.Testsite);
-            setCounties(testsite.Counties);
-          } else {
-            return null;
-          }
+    {
+      const fetchdata = async () => {
+        const Testsite = await axios.get("http://localhost:3500/testsites", {
+          withCredentials: true,
+          validateStatus: () => true,
         });
-      } else {
-        console.log("error!");
-      }
-    };
-    fetchdata();
+
+        if (Testsite.status === 200) {
+          Testsite.data.map((testsite) => {
+            if (testsite.State === selectedState) {
+              setSites(testsite.Testsite);
+              setTempSites(testsite.Testsite);
+              setCounties(testsite.Counties);
+            } else {
+              return null;
+            }
+          });
+        } else {
+          console.log("error!");
+        }
+      };
+      fetchdata();
+    }
   }, []);
 
   const SearchbarStyle = {
@@ -160,10 +161,6 @@ const Testsitepage = () => {
                       <p className="testingsite-Phone">
                         Phone :{" "}
                         <span className="testingsite-detail">{site.Phone}</span>
-                      </p>
-                      <p className="testingsite-Hours">
-                        Hours :{" "}
-                        <span className="testingsite-detail">{site.Hours}</span>
                       </p>
                     </div>
                   </ol>

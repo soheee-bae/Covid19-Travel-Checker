@@ -35,14 +35,15 @@
 }
 .testingsite-card {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 22rem));
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 20rem));
   justify-content: center;
   gap: 3rem;
   margin-top: 4rem;
 }
 
 .testingsite-list {
-  border-radius: 10px;
+  border-radius: 5px;
+  border-top: 4px solid #ff073a;
   padding: 1.5rem;
   background-color: white;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
@@ -54,18 +55,15 @@
 }
 .testingsite-name {
   margin-bottom: 1rem;
-  color: #ff073a;
+  font-weight: 600;
+  line-height: 1.4;
 }
 .testingsite-address {
   margin-bottom: 2rem;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: grey;
 }
-.testingsite-Phone {
-  margin-bottom: 1rem;
-}
-.testingsite-Hours {
-}
-
 .testingsite-detail {
   float: right;
 }
