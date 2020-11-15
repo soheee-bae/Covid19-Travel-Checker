@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {Line} from 'react-chartjs-2';
+import { Line } from "react-chartjs-2";
 import "../styles/Secondpage.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,12 +9,11 @@ import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 import CountUp from "react-countup";
-import {stateContext} from '../App'
-
+import { stateContext } from "../App";
 
 const Secondpage = () => {
-  const {selectedState, setSelectedState} = useContext(stateContext);
-  const selectState = selectedState
+  const { selectedState, setSelectedState } = useContext(stateContext);
+  const selectState = selectedState;
   //'selectedState' is the state selected by user from homepage!!
 
   //const [dashboard, setDashboard] = useState([{}]);
@@ -31,111 +30,163 @@ const Secondpage = () => {
   const [stateAbrev, setStateAbrev] = useState("");
 
   let data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
-        label: 'Confirmed',
+        label: "Confirmed",
         fill: false,
         lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(255, 7, 58, 0.6)',
-        borderCapStyle: 'butt',
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(255, 7, 58, 0.6)",
+        borderCapStyle: "butt",
         borderDash: [],
         borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(255, 7, 58, 0.6)',
-        pointBackgroundColor: '#fff',
+        borderJoinStyle: "miter",
+        pointBorderColor: "rgba(255, 7, 58, 0.6)",
+        pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(255, 7, 58, 0.6)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBackgroundColor: "rgba(255, 7, 58, 0.6)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86,]
-      }
-    ]
+        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86],
+      },
+    ],
   };
 
   let data2 = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
-        label: 'Tested',
+        label: "Tested",
         fill: false,
         lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(7, 32, 255, 0.6)',
-        borderCapStyle: 'butt',
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(7, 32, 255, 0.6)",
+        borderCapStyle: "butt",
         borderDash: [],
         borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(7, 32, 255, 0.6)',
-        pointBackgroundColor: '#fff',
+        borderJoinStyle: "miter",
+        pointBorderColor: "rgba(7, 32, 255, 0.6)",
+        pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(7, 32, 255, 0.6)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBackgroundColor: "rgba(7, 32, 255, 0.6)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86,]
-      }
-    ]
+        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86],
+      },
+    ],
   };
 
   let data3 = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
-        label: 'Recovered',
+        label: "Recovered",
         fill: false,
         lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: '#28a745',
-        borderCapStyle: 'butt',
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "#28a745",
+        borderCapStyle: "butt",
         borderDash: [],
         borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: '#28a745',
-        pointBackgroundColor: '#fff',
+        borderJoinStyle: "miter",
+        pointBorderColor: "#28a745",
+        pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: '#28a745',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBackgroundColor: "#28a745",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [75, 99, 50, 31, 66, 75, 60, 75, 99, 50, 31, 66]
-      }
-    ]
+        data: [75, 99, 50, 31, 66, 75, 60, 75, 99, 50, 31, 66],
+      },
+    ],
   };
 
   let data4 = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
-        label: 'Deaths',
+        label: "Deaths",
         fill: false,
         lineTension: 0.1,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(108, 117, 125, 0.6)',
-        borderCapStyle: 'butt',
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(108, 117, 125, 0.6)",
+        borderCapStyle: "butt",
         borderDash: [],
         borderDashOffset: 0.0,
-        borderJoinStyle: 'miter',
-        pointBorderColor: 'rgba(108, 117, 125, 0.6)',
-        pointBackgroundColor: '#fff',
+        borderJoinStyle: "miter",
+        pointBorderColor: "rgba(108, 117, 125, 0.6)",
+        pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: 'rgba(108, 117, 125, 0.6)',
-        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBackgroundColor: "rgba(108, 117, 125, 0.6)",
+        pointHoverBorderColor: "rgba(220,220,220,1)",
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [15, 29, 70, 61, 86, 45, 90, 15, 29, 70, 61, 86]
-      }
-    ]
+        data: [15, 29, 70, 61, 86, 45, 90, 15, 29, 70, 61, 86],
+      },
+    ],
   };
 
   let abbrev = new Map();
@@ -208,7 +259,7 @@ const Secondpage = () => {
       setRecovered(result.data.recovered);
       setDeath(result.data.deaths);
       setStateAbrev(abbrev[stateName]);
-      setpositiveIncrease(result.data.positiveIncrease); 
+      setpositiveIncrease(result.data.positiveIncrease);
       settestedIncrease(result.data.negativeIncrease);
       setrecoveredIncrease(result.data.negativeIncrease);
       setdeathIncrease(result.data.deathIncrease);
@@ -223,95 +274,99 @@ const Secondpage = () => {
     //Use the 'styles/Secondpage.css' to style this page.
     <div className="Secondpage">
       <div className="left-arrow-icon">
-          <Link to="/" style={{ textDecoration: "none", color:"black"}}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </Link>
+        <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Link>
       </div>
       <div className="mainContent-area">
-        <div className ="data-area">
-          <div className='stateName'><h1>{stateName}</h1></div>
-          <div className='updatedTime'>{dateChecked}</div>
-          <div className='detail-data-area'>
-          <div className='StateConfirmed'>
-            <h3 className='detail-data-list'>Confirmed</h3> 
-            <div className="Confirmed-increased">
+        <div className="data-area">
+          <div className="stateName">
+            <h1>{stateName}</h1>
+          </div>
+          <div className="updatedTime">{dateChecked}</div>
+          <div className="detail-data-area">
+            <div className="StateConfirmed">
+              <h3 className="detail-data-list">Confirmed</h3>
+              <div className="Confirmed-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
                 {positiveIncrease}
               </div>
-            <CountUp end={positive} start={0} duration={4} separator="," />
-          </div>
-          <div className='StateTested'>
-            <h3 className='detail-data-list'>Tested</h3>
-            <div className="Tested-increased">
+              <CountUp end={positive} start={0} duration={4} separator="," />
+            </div>
+            <div className="StateTested">
+              <h3 className="detail-data-list">Tested</h3>
+              <div className="Tested-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
                 {testedIncrease}
               </div>
-            <CountUp end={tested} start={0} duration={4} separator="," />
-          </div>
-          <div className='StateRecovered'>
-            <h3 className='detail-data-list'>Recovered</h3>
-            <div className="Recovered-increased">
+              <CountUp end={tested} start={0} duration={4} separator="," />
+            </div>
+            <div className="StateRecovered">
+              <h3 className="detail-data-list">Recovered</h3>
+              <div className="Recovered-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
                 {recoveredIncrease}
               </div>
-            <CountUp end={recovered} start={0} duration={4} separator="," />
-          </div>
-          <div className='StateDeaths'>
-            <h3 className='detail-data-list'>Deaths</h3>
-            <div className="Death-increased">
+              <CountUp end={recovered} start={0} duration={4} separator="," />
+            </div>
+            <div className="StateDeaths">
+              <h3 className="detail-data-list">Deaths</h3>
+              <div className="Death-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
                 {deathIncrease}
               </div>
-            <CountUp end={death} start={0} duration={4} separator="," />
+              <CountUp end={death} start={0} duration={4} separator="," />
+            </div>
           </div>
         </div>
-        </div>
 
-      {/*data.datasets.data = graphIncrease(data, dashboard.deathIncrease)}
+        {/*data.datasets.data = graphIncrease(data, dashboard.deathIncrease)}
       {//data.datasets.data*/}
-      <div className='graph-area'>
-        <div className="graph">
-          <Line 
-            data={data}
-            width={500}
-            height={250}
-            options={{ maintainAspectRatio: false }}
-          />
-        </div> 
-        <div className="graph2">
-          <Line 
-            data={data2}
-            width={500}
-            height={250}
-            options={{ maintainAspectRatio: false }}
-          />
-      </div>
-      <div className="graph3">
-        <Line 
-          data={data3}
-          width={500}
-          height={250}
-          options={{ maintainAspectRatio: false }}
-        />
-        </div> 
-        <div className="graph4">
-          <Line 
-            data={data4}
-            width={500}
-            height={250}
-            options={{ maintainAspectRatio: false }}
-          />
-        </div> 
-      </div>
+        <div className="graph-area">
+          <div className="graph">
+            <Line
+              data={data}
+              width={500}
+              height={250}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
+          <div className="graph2">
+            <Line
+              data={data2}
+              width={500}
+              height={250}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
+          <div className="graph3">
+            <Line
+              data={data3}
+              width={500}
+              height={250}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
+          <div className="graph4">
+            <Line
+              data={data4}
+              width={500}
+              height={250}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
+        </div>
       </div>
       <div className="right-arrow-icon">
-          <Link to="/restrictions-on-travelers" style={{ textDecoration: "none",color:"black" }}>
-            <FontAwesomeIcon icon={faAngleRight} />
-          </Link>
+        <Link
+          to="/restrictions-on-travelers"
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Link>
       </div>
-      
     </div>
-);
+  );
 };
 
 export default Secondpage;

@@ -5,14 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import stateList from "../stateList/StateList.json";
-import {stateContext} from '../App'
-
+import { stateContext } from "../App";
 
 import axios from "axios";
 import CountUp from "react-countup";
 
 const Home = (props) => {
-  const {selectedState, setSelectedState} = useContext(stateContext);
+  const { selectedState, setSelectedState } = useContext(stateContext);
 
   const [dashboard, setDashboard] = useState([{}]);
   const [dateChecked, setDateChecked] = useState("");
@@ -20,7 +19,6 @@ const Home = (props) => {
   const [tested, setTested] = useState("");
   const [recovered, setRecovered] = useState("");
   const [death, setDeath] = useState("");
-
 
   const HandleonChange = (search) => {
     setSelectedState(search.value);
@@ -41,14 +39,13 @@ const Home = (props) => {
       cursor: "text",
       borderRadius: 5,
       width: "40vw",
-      minWidth:"300px",
+      minWidth: "300px",
       height: "3rem",
-      padding:"0 1rem",
+      padding: "0 1rem",
       boxShadow: "0 10px 35px rgba(0,0,0,.2)",
-      color:"#6c757d",
+      color: "#6c757d",
       outline: "none",
       marginTop: "1rem",
-
     }),
 
     option: (styles, { isFocused }) => {
@@ -61,7 +58,8 @@ const Home = (props) => {
         fontSize: 14,
         width: "40vw",
         height: "3rem",
-        minWidth:"300px",  zIndex:'0',
+        minWidth: "300px",
+        zIndex: "0",
       };
     },
 
@@ -69,45 +67,44 @@ const Home = (props) => {
       ...styles,
       color: "black",
       width: "40vw",
-      fontSize:14,
-      minWidth:"300px",  zIndex:'0',
-
+      fontSize: 14,
+      minWidth: "300px",
+      zIndex: "0",
     }),
 
     menu: (styles) => ({
       ...styles,
-      marginTop: '1rem',
+      marginTop: "1rem",
       boxShadow: "none",
       borderRadius: 0,
       borderTop: "solid 1px",
       width: "40vw",
       height: "3rem",
-      minWidth:"300px",  zIndex:'0',
+      minWidth: "300px",
+      zIndex: "0",
     }),
 
     singleValue: (styles) => ({
       ...styles,
       color: "rgba(255, 80, 86)",
       width: "40vw",
-      height: "3rem",
-      minWidth:"300px",  zIndex:'0',
+      minWidth: "300px",
+      zIndex: "0",
     }),
   };
 
   useEffect(() => {
-    setSelectedState("")
+    setSelectedState("");
     const fetchdata = async () => {
-      const result = await axios.get(
-        "http://localhost:3500/states/total"
-      );
-        console.log(result)
+      const result = await axios.get("http://localhost:3500/states/total");
+
       setPositive(result.data.positive);
       setTested(result.data.negative + result.data.positive);
       setRecovered(result.data.recovered);
       setDeath(result.data.deaths);
 
       setDashboard(result.data);
-  //    setDateChecked(result.data[0].dateChecked);
+      //    setDateChecked(result.data[0].dateChecked);
     };
     const savedata = () => {};
     fetchdata();
@@ -132,7 +129,6 @@ const Home = (props) => {
       <div className="mainContent-area">
         <div className="title-container">
           <p className="homepage-title">UNITED STATES</p>
-          
         </div>
         <div className="US-Covid-data">
           <div className="US-Covid-data-first">
@@ -154,7 +150,7 @@ const Home = (props) => {
               <p className="Tested-subtitle">Tested</p>
               <div className="Tested-increased">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-                {dashboard.positiveIncrease+dashboard.negativeIncrease}
+                {dashboard.positiveIncrease + dashboard.negativeIncrease}
               </div>
               <CountUp
                 className="Countup-data"
@@ -170,7 +166,8 @@ const Home = (props) => {
               <p className="Recovered-subtitle">Recovered</p>
               <div className="Recovered-increased ">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-                {dashboard.recovered}</div>
+                {dashboard.recovered}
+              </div>
               <CountUp
                 className="Countup-data"
                 end={recovered}
