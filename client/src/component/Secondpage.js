@@ -249,11 +249,9 @@ const Secondpage = () => {
 
   useEffect(() => {
     const fetchdata = async () => {
-      const result = await axios.get(
-        "http://localhost:3500/states/" + abbrev[stateName]
-      );
+      const result = await axios("http://localhost:3500/states/" + abbrev[stateName]);
       //const result = await axios("http://localhost:3500/states/" + "AK");
-      //setDashboard(result.data);
+      //setDashboard(result.data); 
       console.log(result);
       setDateChecked(result.data.lastUpdated);
       setPositive(result.data.positive);
@@ -263,7 +261,7 @@ const Secondpage = () => {
       setStateAbrev(abbrev[stateName]);
       setpositiveIncrease(result.data.positiveIncrease);
       settestedIncrease(result.data.negativeIncrease);
-      //setrecoveredIncrease();
+      setrecoveredIncrease(result.data.negativeIncrease);
       setdeathIncrease(result.data.deathIncrease);
       //setStateName(result.data[0].state);
     };
