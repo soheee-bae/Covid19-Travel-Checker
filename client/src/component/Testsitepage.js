@@ -8,7 +8,8 @@ import { stateContext } from "../App";
 import axios from "axios";
 
 const Testsitepage = () => {
-  const { selectedState, setSelectedState } = useContext(stateContext);
+  //const { selectedState, setSelectedState } = useContext(stateContext);
+  const selectedState = "Alabama";
   const [sites, setSites] = useState([]);
   const [tempSites, setTempSites] = useState([]);
   const [Counties, setCounties] = useState([]);
@@ -85,15 +86,17 @@ const Testsitepage = () => {
       fontSize: 14,
       minWidth: "300px",
       zIndex: "0",
+      textAlign: "left",
     }),
 
     menu: (styles) => ({
       ...styles,
-      marginTop: "1rem",
+      marginTop: "0",
       boxShadow: "none",
       borderRadius: 0,
       borderTop: "solid 1px",
       width: "40vw",
+      height: "3rem",
       minWidth: "300px",
       zIndex: "0",
     }),
@@ -113,46 +116,64 @@ const Testsitepage = () => {
 
   return (
     <div className="Testsitepage">
-      <div className="Testsite-leftarrow">
-        <Link
-          to="/state-travel-restrictions"
-          style={{ textDecoration: "none" }}
-        >
-          <FontAwesomeIcon
-            style={{ fontSize: "30px", color: "black" }}
-            icon={faAngleLeft}
-          />
-        </Link>
+      <div className="testsitepage-title">
+        <p>
+          TESTING SITE LOCATION OF{" "}
+          <span style={{ color: "#ff073a" }}>
+            {selectedState.toUpperCase()}
+          </span>
+        </p>
       </div>
-      <div className="Testsitepage-mainarea">
-        <div className="search-bar-for-counties">
-          <Select
-            options={CountiesList}
-            placeholder="Search the Counties"
-            openMenuOnClick={false}
-            className="counties-search-bar"
-            styles={SearchbarStyle}
-            onChange={handleSearchbarSubmit}
-          />
+      <div className="testsite-container">
+        <div className="Testsite-leftarrow">
+          <Link
+            to="/state-travel-restrictions"
+            style={{ textDecoration: "none" }}
+          >
+            <FontAwesomeIcon
+              style={{ fontSize: "30px", color: "black" }}
+              icon={faAngleLeft}
+            />
+          </Link>
         </div>
-        <div className="output-for-testing-site">
-          <ul className="testingsite-card">
-            {tempSites &&
-              tempSites.map((site, index) => (
-                <ol className="testingsite-list" key={index}>
-                  <div className="testingsite-info">
-                    <p className="testingsite-name">{site.Name}</p>
-                    <p className="testingsite-address">{site.Address}</p>
-                    <p className="testingsite-Phone">{site.Phone}</p>
-                    <p className="testingsite-Hours">{site.Hours}</p>
-                  </div>
-                </ol>
-              ))}
-          </ul>
+        <div className="Testsitepage-mainarea">
+          <div className="search-bar-for-counties">
+            <Select
+              options={CountiesList}
+              placeholder="Search the Counties"
+              openMenuOnClick={false}
+              className="counties-search-bar"
+              styles={SearchbarStyle}
+              onChange={handleSearchbarSubmit}
+            />
+          </div>
+          <div className="output-for-testing-site">
+            <ul className="testingsite-card">
+              {tempSites &&
+                tempSites.map((site, index) => (
+                  <ol className="testingsite-list" key={index}>
+                    <div className="testingsite-info">
+                      <p className="testingsite-name">{site.Name}</p>
+                      <p className="testingsite-address">
+                        <span>{site.Address}</span>
+                      </p>
+                      <p className="testingsite-Phone">
+                        Phone :{" "}
+                        <span className="testingsite-detail">{site.Phone}</span>
+                      </p>
+                      <p className="testingsite-Hours">
+                        Hours :{" "}
+                        <span className="testingsite-detail">{site.Hours}</span>
+                      </p>
+                    </div>
+                  </ol>
+                ))}
+            </ul>
+          </div>
         </div>
-      </div>
-      <div className="right-arrow-icon">
-        <p></p>
+        <div className="right-arrow-icon">
+          <p></p>
+        </div>
       </div>
     </div>
   );

@@ -29,9 +29,9 @@ export const SidebarData = [
     cName: "nav-text",
   },
   {
-    title: "Forum",
-    path: "/forum",
-    icon: <IoIcons.IoMdChatbubbles />,
+    title: "Profile",
+    path: "/profile",
+    icon: <FaIcons.FaUser />,
     cName: "nav-text",
   },
 ];

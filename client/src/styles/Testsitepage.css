@@ -1,10 +1,71 @@
 .Testsitepage {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   gap: 3rem;
-  text-align: center;
-  align-content: center;
-  align-items: center;
   margin: 5%;
+}
+.testsitepage-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.testsite-container {
+  display: flex;
+  flex-direction: row;
+}
+.Testsite-leftarrow {
+}
+
+.search-bar-for-counties {
+  text-align: center;
+}
+
+.Testsitepage-mainarea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.output-for-testing-site {
+  width: 100%;
+}
+.testingsite-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 22rem));
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 4rem;
+}
+
+.testingsite-list {
+  border-radius: 10px;
+  padding: 1.5rem;
+  background-color: white;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+}
+
+.testingsite-info {
+  display: flex;
+  flex-direction: column;
+}
+.testingsite-name {
+  margin-bottom: 1rem;
+  color: #ff073a;
+}
+.testingsite-address {
+  margin-bottom: 2rem;
+  font-size: 12px;
+}
+.testingsite-Phone {
+  margin-bottom: 1rem;
+}
+.testingsite-Hours {
+}
+
+.testingsite-detail {
+  float: right;
 }
