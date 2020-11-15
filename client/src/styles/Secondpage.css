@@ -12,10 +12,7 @@ body {
   justify-content: center;
   gap: 3rem;
   text-align: center;
-  align-content: center;
-  align-items: center;
   margin: 5%;
-
 }
 .left-arrow-icon,
 .right-arrow-icon {

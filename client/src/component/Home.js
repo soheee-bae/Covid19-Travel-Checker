@@ -166,7 +166,7 @@ const Home = (props) => {
               <p className="Recovered-subtitle">Recovered</p>
               <div className="Recovered-increased ">
                 <FontAwesomeIcon className="arrow-up" icon={faArrowUp} />
-                {dashboard.recovered}
+                {dashboard.positiveIncrease + dashboard.negativeIncrease}
               </div>
               <CountUp
                 className="Countup-data"
