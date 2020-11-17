@@ -12,6 +12,12 @@ const Thirdpage = () => {
   const {selectedState, setSelectedState} = useContext(stateContext);
   const [travelerRestrictions, setTravelerRestrictions] = useState({});
   const [airlineEntry, SetEntry] = useState([]);
+  const [border, SetBorder] = useState([]);
+  const [curfew, SetCurfew] = useState([]);
+  const [mask, SetMask] = useState([]);
+  const [stores, SetStores] = useState([]);
+  const [restaurants, SetRestaurants] = useState([]);
+  const [selectedStateUpper, SetUpper] = useState([]);
   console.log(airlineEntry);
   
 
@@ -21,7 +27,12 @@ const Thirdpage = () => {
       if (travelerRestriction.State === selectedState) {
         setTravelerRestrictions(travelerRestriction);
         SetEntry(travelerRestriction.TravelerRestrictions);
-        
+        SetBorder(travelerRestriction.BorderClosure)
+        SetCurfew(travelerRestriction.Curfew)
+        SetMask(travelerRestriction.MaskRequirement)
+        SetStores(travelerRestriction["NonEssentialStores Open"])
+        SetRestaurants(travelerRestriction.RestaurantsOpen)
+        SetUpper(selectedState.toUpperCase())
       } else {
         return null;
       }
@@ -39,14 +50,18 @@ const Thirdpage = () => {
           </Link>
           </div>
       <div className="mainContent-area">
-          <h1>Restrictions on Travelers</h1>
-          <h2>{selectedState}</h2>
-          <h3>{airlineEntry}</h3>
+          <h2>IN THE STATE OF {selectedStateUpper} THE FOLLOWING RESTRICTIONS APPLY</h2>
+          <h4>RESTRICTIONS ON TRAVELERS: </h4><h5>{airlineEntry}</h5>
+          <h4>BORDER RESTRICTIONS: </h4><h5>{border}</h5>
+          <h4>CURFEW: </h4><h5>{curfew}</h5>
+          <h4>MASK MANDATES: </h4><h5>{mask}</h5>
+          <h4>ARE NON ESSENTIAL STORES OPEN? </h4><h5>{stores}</h5>
+          <h4>ARE RESTAURANTS OPEN FOR DINE-IN OR TAKE OUT? </h4><h5>{restaurants}</h5>
       </div>
 
       {/*This section is just for the arrow to previous and next pages*/}
       <div className="right-arrow-icon">
-          <Link to="/state-travel-restrictions" style={{ textDecoration: "none",color:"black" }}>
+          <Link to="/test-site-location"  style={{ textDecoration: "none",color:"black" }}>
             <FontAwesomeIcon icon={faAngleRight} />
           </Link>
       </div>

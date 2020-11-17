@@ -128,7 +128,7 @@ const Testsitepage = () => {
       <div className="testsite-container">
         <div className="Testsite-leftarrow">
           <Link
-            to="/state-travel-restrictions"
+            to="/restrictions-on-travelers"
             style={{ textDecoration: "none" }}
           >
             <FontAwesomeIcon
