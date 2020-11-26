@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import "../styles/Testsitepage.css";
-import Testsite from "../Testsite/Testsite.json";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";

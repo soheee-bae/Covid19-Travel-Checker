@@ -203,6 +203,15 @@ router.get("/states/:name", (req, res) => {
   });
 });
 
+router.get("/userprofile", async (req, res) => {
+  try {
+    console.log(req);
+    return res.status(200).send(req.header);
+  } catch (err) {
+    return res.sendStatus(400);
+  }
+});
+
 router.get("/testsites", async (req, res) => {
   try {
     const testsites = await TestSite.find({});
