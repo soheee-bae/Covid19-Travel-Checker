@@ -7,21 +7,42 @@ import stateList from "../stateList/StateList.json";
 import jwt_decode from "jwt-decode";
 import Select from "react-select";
 
-const Profile = () => {
+const Profile = (props) => {
   const { webtoken } = useContext(covidContext);
   const [webToken, setWebToken] = webtoken;
-  const [redirect, setRedirect] = useState(false);
-  const [selectedInput, setSelectedInput] = useState([]);
-  // var decoded = jwt_decode(webToken);
-  console.log(selectedInput);
-  /* useEffect(() => {
+  const [multiselect, setMultiSelect] = useState([]);
+  const [decoded, setDecoded] = useState("");
+  const [selectedInput, setSelected] = useState({
+    selectedState: [],
+    username: "",
+  });
+
+  useEffect(() => {
     if (webToken === "") {
-      setRedirect(true);
+      props.history.push({
+        pathname: "/login",
+      });
+    } else {
+      var decoded = jwt_decode(webToken);
+      setDecoded(decoded);
+      const handleProfileBtn = async () => {
+        const data = await axios.get(
+          `http://localhost:3500/towatchData/${decoded.username}`,
+          {
+            withCredentials: true,
+            validateStatus: () => true,
+          }
+        );
+        if (data.status === 200) {
+          setMultiSelect(data.data);
+        } else {
+        }
+      };
+      handleProfileBtn();
+      setSelected({ ...selectedInput, username: decoded.username });
     }
   }, []);
-  if (redirect === true) {
-    return <Redirect to="/login" />;
-  }*/
+
   const profilestyle = {
     control: (base, state) => ({
       ...base,
@@ -46,7 +67,7 @@ const Profile = () => {
         backgroundColor: isFocused ? "rgba(255, 80, 86)" : "white",
         color: isFocused ? "white" : "black",
         lineHeight: 2,
-        fontSize: 13,
+        fontSize: 14,
         width: "25%",
         textAlign: "center",
         zIndex: "0",
@@ -105,23 +126,45 @@ const Profile = () => {
     }),
   };
 
+  const handleProfileBtn = async (e) => {
+    e.preventDefault();
+    const data = await axios.post(
+      "http://localhost:3500/towatch",
+      selectedInput,
+      {
+        withCredentials: true,
+        validateStatus: () => true,
+      }
+    );
+    if (data.status === 200) {
+      alert("We have updated your to watch system!");
+      props.history.push("/");
+    } else {
+    }
+  };
+
   const stateLists = stateList.map(({ State }) => {
     return { value: State, label: State };
   });
 
   const handlemultipleselect = (search) => {
-    setSelectedInput([search]);
+    setMultiSelect(search);
+    setSelected({ ...selectedInput, selectedState: search });
   };
+
   return (
     <div className="Profile">
       <div className="profile-container">
         <div className="profile-top-container">
           <div className="profile-top-sub-container">
             <h1 className="profile-title">PROFILE</h1>
-            <p className="profile-username">username here</p>
-            {/*   <p className="profile-username">{decoded.username}</p>*/}
+            <p className="profile-username">{decoded.username}</p>
           </div>
-          <button type="submit" className="profile-btn">
+          <button
+            onClick={handleProfileBtn}
+            type="submit"
+            className="profile-btn"
+          >
             SUBMIT
           </button>
         </div>
@@ -134,6 +177,7 @@ const Profile = () => {
             onChange={handlemultipleselect}
             menuIsOpen
             styles={profilestyle}
+            value={multiselect}
           />
         </div>
       </div>

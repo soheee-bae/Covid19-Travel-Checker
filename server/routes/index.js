@@ -17,6 +17,13 @@ mongoose.connect("mongodb://localhost/my_db");
 var account = mongoose.Schema({
   username: String,
   password: String,
+  states: [
+    {
+      _id: 0,
+      value: String,
+      label: String,
+    },
+  ],
   salt: String,
 });
 var Account = mongoose.model("Account", account);
@@ -207,6 +214,48 @@ router.get("/userprofile", async (req, res) => {
   try {
     console.log(req);
     return res.status(200).send(req.header);
+  } catch (err) {
+    return res.sendStatus(400);
+  }
+});
+
+router.post("/towatch", async (req, res) => {
+  let username = req.body.username;
+  let selectedState = req.body.selectedState;
+  try {
+    let stateFunction = async (username, selectedState) => {
+      let result = await Account.findOne({ username: username });
+      console.log(result.states);
+      if (result.states.length === 0) {
+        console.log("adding" + result.states);
+        selectedState.map((state) => {
+          result.states.push(state);
+        });
+        result.save();
+      } else {
+        console.log("Updating" + selectedState);
+        let results = await Account.findOneAndUpdate(
+          {
+            username: username,
+          },
+          { states: selectedState }
+        );
+        console.log(results);
+      }
+    };
+    stateFunction(username, selectedState);
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.sendStatus(400);
+  }
+});
+
+router.get("/towatchData/:username", async (req, res) => {
+  try {
+    let result = await Account.findOne({ username: req.params.username });
+    let selectedState = result.states;
+    console.log(selectedState);
+    return res.status(200).send(selectedState);
   } catch (err) {
     return res.sendStatus(400);
   }
