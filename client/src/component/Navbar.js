@@ -13,6 +13,7 @@ const Navbar = () => {
   const [webToken, setWebToken] = webtoken;
   const [sidebar, setSidebar] = useState(false);
   const [redirect, setRedirect] = useState(false);
+
   const showSidebar = () => setSidebar(!sidebar);
 
   const handleSignout = () => {
@@ -25,7 +26,6 @@ const Navbar = () => {
   if (redirect === true) {
     return <Redirect to="/" />;
   }
-
   return (
     <div className="Topnavbar">
       <IconContext.Provider value={{ color: "#fff" }}>
@@ -68,9 +68,6 @@ const Navbar = () => {
         </ul>
       ) : (
         <ul className="navbar-ul-logged">
-          <Link to="/profile" style={{ textDecoration: "none" }}>
-            <ol className="nav-list">PROFILE</ol>
-          </Link>
           <button className="signout-button" onClick={handleSignout}>
             <ol className="nav-dropdown-item">SIGN OUT</ol>
           </button>

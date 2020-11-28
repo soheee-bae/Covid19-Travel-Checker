@@ -102,7 +102,6 @@ const Home = (props) => {
       setTested(result.data.negative + result.data.positive);
       setRecovered(result.data.recovered);
       setDeath(result.data.deaths);
-
       setDashboard(result.data);
       //    setDateChecked(result.data[0].dateChecked);
     };

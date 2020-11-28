@@ -10,7 +10,6 @@ import EducationZone from "./component/EducationZone";
 import Login from "./component/LoginPage";
 import Secondpage from "./component/Secondpage";
 import Thirdpage from "./component/Thirdpage";
-import Fourthpage from "./component/Fourthpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
 import Profile from "./component/Profile";
@@ -48,7 +47,7 @@ function App() {
               <Route path="/state-covid19-dashboard" component={Secondpage} />
               <Route path="/profile" component={Profile} />
               <Route path="/restrictions-on-travelers" component={Thirdpage} />
-              <Route path="/state-travel-restrictions" component={Fourthpage} />
+
               <Route path="/test-site-location" component={Testsitepage} />
             </Switch>
           </div>
