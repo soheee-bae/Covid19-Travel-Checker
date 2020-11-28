@@ -210,59 +210,56 @@ router.get("/states/:name", (req, res) => {
   });
 });
 
-router.get("/userprofile", async (req, res) => {
-  try {
-    console.log(req);
-    return res.status(200).send(req.header);
-  } catch (err) {
-    return res.sendStatus(400);
-  }
+router.post("/towatch", (req, res) => {
+  let stateFunction = async (username, selectedState) => {
+    let result = await Account.findOne({ username: username });
+    if (result.states.length === 0) {
+      selectedState.map((state) => {
+        result.states.push(state);
+      });
+      result.save();
+    } else {
+      let results = await Account.findOneAndUpdate(
+        {
+          username: username,
+        },
+        { states: selectedState }
+      );
+    }
+  };
+  // generate response
+  stateFunction(req.body.username, req.body.selectedState)
+    .then(() => res.sendStatus(200))
+    .catch((err) => res.status(404).send(err));
+
+  return;
 });
 
-router.post("/towatch", async (req, res) => {
-  let username = req.body.username;
-  let selectedState = req.body.selectedState;
-  try {
-    let stateFunction = async (username, selectedState) => {
-      let result = await Account.findOne({ username: username });
-      if (result.states.length === 0) {
-        selectedState.map((state) => {
-          result.states.push(state);
-        });
-        result.save();
-      } else {
-        let results = await Account.findOneAndUpdate(
-          {
-            username: username,
-          },
-          { states: selectedState }
-        );
-      }
-    };
-    stateFunction(username, selectedState);
-    return res.sendStatus(200);
-  } catch (err) {
-    return res.sendStatus(400);
-  }
-});
-
-router.get("/towatchData/:username", async (req, res) => {
-  try {
-    let result = await Account.findOne({ username: req.params.username });
+router.get("/towatchData/:username", (req, res) => {
+  let towatchfunction = async (username) => {
+    let result = await Account.findOne({ username: username });
     let selectedState = result.states;
-    return res.status(200).send(selectedState);
-  } catch (err) {
-    return res.sendStatus(400);
-  }
+    return Promise.resolve(selectedState);
+  };
+  // generate response
+  towatchfunction(req.params.username)
+    .then((selectedState) => res.status(200).send(selectedState))
+    .catch((err) => res.status(404).send(err));
+
+  return;
 });
 
-router.get("/testsites", async (req, res) => {
-  try {
+router.get("/testsites", (req, res) => {
+  let testisitefunction = async () => {
     const testsites = await TestSite.find({});
-    return res.status(200).send(testsites);
-  } catch (err) {
-    return res.sendStatus(400);
-  }
+    return Promise.resolve(testsites);
+  };
+
+  testisitefunction()
+    .then((testsites) => res.status(200).send(testsites))
+    .catch((err) => res.status(404).send(err));
+
+  return;
 });
 
 module.exports = router;

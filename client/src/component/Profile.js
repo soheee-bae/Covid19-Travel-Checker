@@ -36,6 +36,7 @@ const Profile = (props) => {
         if (data.status === 200) {
           setMultiSelect(data.data);
         } else {
+          alert(data.data);
         }
       };
       handleProfileBtn();
@@ -140,6 +141,7 @@ const Profile = (props) => {
       alert("We have updated your to watch system!");
       props.history.push("/");
     } else {
+      alert(data.data);
     }
   };
 
@@ -158,15 +160,16 @@ const Profile = (props) => {
         <div className="profile-top-container">
           <div className="profile-top-sub-container">
             <h1 className="profile-title">PROFILE</h1>
-            <p className="profile-username">{decoded.username}</p>
+            {/*<p className="profile-username">{decoded.username}</p>*/}
           </div>
           <button
             onClick={handleProfileBtn}
             type="submit"
             className="profile-btn"
           >
-            SUBMIT
+            SAVE
           </button>
+          <button>Test Button for Email</button>
         </div>
         <div className="profile-select">
           <Select

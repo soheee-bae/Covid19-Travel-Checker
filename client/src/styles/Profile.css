@@ -28,6 +28,7 @@
 .profile-title {
 }
 .profile-username {
+  border-bottom: 2px solid rgba(255, 80, 86);
 }
 .profile-select {
   width: 100%;
