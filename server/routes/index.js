@@ -225,22 +225,18 @@ router.post("/towatch", async (req, res) => {
   try {
     let stateFunction = async (username, selectedState) => {
       let result = await Account.findOne({ username: username });
-      console.log(result.states);
       if (result.states.length === 0) {
-        console.log("adding" + result.states);
         selectedState.map((state) => {
           result.states.push(state);
         });
         result.save();
       } else {
-        console.log("Updating" + selectedState);
         let results = await Account.findOneAndUpdate(
           {
             username: username,
           },
           { states: selectedState }
         );
-        console.log(results);
       }
     };
     stateFunction(username, selectedState);
@@ -254,7 +250,6 @@ router.get("/towatchData/:username", async (req, res) => {
   try {
     let result = await Account.findOne({ username: req.params.username });
     let selectedState = result.states;
-    console.log(selectedState);
     return res.status(200).send(selectedState);
   } catch (err) {
     return res.sendStatus(400);
