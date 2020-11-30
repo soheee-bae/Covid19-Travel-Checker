@@ -21,10 +21,23 @@ body {
     justify-content: center;
     height: 100%;
     width: 100%;
-    gap: 4rem;
+    gap: 2rem;
   }
 
 .left-arrow-icon,
 .right-arrow-icon {
   font-size: 30px;
+}
+
+#box{
+  margin: auto;
+  width:60%;
+  height:50%;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+  padding: 2%
+}
+
+.colorText{
+  color: #ff073a;
+  padding: 1%;
 }
