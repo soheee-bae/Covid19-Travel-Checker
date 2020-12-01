@@ -215,32 +215,7 @@ router.get("/states/:name", (req, res) => {
   });
 });
 
-router.post("/towatch", (req, res) => {
-  let stateFunction = async (username, selectedState) => {
-    // get the account associated with this username
-    let account = await Account.findOne({ username: username })
-      .then((res) => { 
-        if (res == null) 
-          throw "UsernameDoesNotExist"; 
-        return res 
-      });
-
-    // push the selected state to the watch list and update the database
-    account.states.push(selectedState);
-    account.save();
-
-    return null;
-  };
-
-  // generate response
-  stateFunction(req.body.username, req.body.selectedState)
-    .then((_) => res.sendStatus(200))
-    .catch((err) => res.status(404).send(err));
-
-  return;
-});
-
-router.use("/towatchData/:username", (req, res, next) => {
+let validateLogin = (req, res, next) => {
   let validateToken = async (token, username) => {
     // ensure token exists
     if (token == null)
@@ -256,32 +231,35 @@ router.use("/towatchData/:username", (req, res, next) => {
     return null;
   }
 
-  validateToken(req.body.jwt, req.params.username)
+  validateToken(req.body.jwt, req.body.username)
     .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
     return;
-});
+}
 
-router.post("/towatchData/:username", (req, res) => {
-  let towatchfunction = async (username) => {
-    // get the account associated with this username
+router.post("/towatch", validateLogin, (req, res) => {
+  let f = async (username, states) => {
+    // get account
     let account = await Account.findOne({ username: username })
-      .then((res) => { 
-        if (res == null) 
-          throw "UsernameDoesNotExist"; 
-        return res 
-      });
+      .catch((_) => { throw "UsernameDoesNotExist" });
+
+    // if a "states" is provided, 
+    if (states != null) {
+      account.states = states;
+      await account
+        .save()
+        .catch((_) => { throw "DatabaseError" });
+    };
 
     return account.states;
-  };
+  }
 
-  // generate response
-  towatchfunction(req.params.username)
-    .then((selectedState) => res.status(200).send(selectedState))
+  f(req.body.username, req.body.states)
+    .then((states) => res.status(200).send(states))
     .catch((err) => res.status(404).send(err));
 
-  return;
+    return;
 });
 
 router.get("/testsites", (req, res) => {
