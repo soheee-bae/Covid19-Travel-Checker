@@ -151,7 +151,10 @@ router.post("/register", (req, res) => {
   // generate response
   register(req.body.username, req.body.password)
     .then((jwt) => res.status(200).send(jwt))
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => {
+      console.log(err)
+      res.status(404).send(err)
+    });
 
   return;
 });
@@ -185,7 +188,7 @@ router.get("/states/total", (req, res) => {
 
   total()
     .then((total) => res.status(200).send(total))
-    .catch((_) => res.status(404).send(null));
+    .catch((err) => res.status(404).send(err));
 
   return;
 });
@@ -227,7 +230,7 @@ router.post("/towatch", (req, res) => {
   // generate response
   stateFunction(req.body.username, req.body.selectedState)
     .then((_) => res.sendStatus(200))
-    .catch((_) => res.status(404).send(null));
+    .catch((err) => res.status(404).send(err));
 
   return;
 });
@@ -236,7 +239,7 @@ router.get("/towatchData/:username", (req, res) => {
   let towatchfunction = async (username) => {
     // get the account associated with this username
     let account = await Account.findOne({ username: username })
-      .catch((_) => { throw "UsernameAlreadyExists" });
+      .catch((_) => { throw "UsernameDoesNotExist" });
 
     return account.selectedState;
   };
@@ -244,7 +247,7 @@ router.get("/towatchData/:username", (req, res) => {
   // generate response
   towatchfunction(req.params.username)
     .then((selectedState) => res.status(200).send(selectedState))
-    .catch((_) => res.status(404).send(null));
+    .catch((err) => res.status(404).send(err));
 
   return;
 });
@@ -256,7 +259,7 @@ router.get("/testsites", (req, res) => {
 
   testisitefunction()
     .then((testsites) => res.status(200).send(testsites))
-    .catch((_) => res.status(404).send(null));
+    .catch((err) => res.status(404).send(err));
 
   return;
 });
