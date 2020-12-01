@@ -235,7 +235,7 @@ let validateLogin = (req, res, next) => {
     .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
-    return;
+  return;
 }
 
 router.post("/towatch", validateLogin, (req, res) => {
@@ -259,7 +259,7 @@ router.post("/towatch", validateLogin, (req, res) => {
     .then((states) => res.status(200).send(states))
     .catch((err) => res.status(404).send(err));
 
-    return;
+  return;
 });
 
 router.get("/testsites", (req, res) => {
