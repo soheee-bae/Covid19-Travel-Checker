@@ -18,6 +18,7 @@ var account = mongoose.Schema({
   username: String,
   password: String,
   states: [String],
+  admin: Boolean,
 });
 var Account = mongoose.model("Account", account);
 
@@ -49,6 +50,15 @@ StateData.remove({}, (req, result) => {});
 
 // insert state data
 const fillDatabase = async () => {
+  let salt = await bcrypt.genSalt(10);
+  let hash = await bcrypt.hash("admin1", salt);
+  await new Account({
+    username: "admin",
+    password: hash,
+    states: [],
+    admin: true,
+  }).save();
+
   result = await axios("https://api.covidtracking.com/v1/states/current.json");
   result.data.map(async (state) => {
     await new StateData({
@@ -130,6 +140,7 @@ router.post("/register", (req, res) => {
       username: username,
       password: hash,
       states: [],
+      admin: false,
     })
       .save()
       .catch((_) => { throw "DBInsertError" });
