@@ -83,26 +83,27 @@ router.post("/login", (req, res) => {
   let login = async (username, password) => {
     // verify username/password are not null
     if (username == null || password == null)
-      return Promise.reject("InvalidUsernameOrPassword");
+      throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
     let [dbhash, salt] = await Account.findOne({ username: username }).then(
       (doc) => {
-        if (doc == null) return Promise.reject("UsernameDoesNotExist");
-        else return Promise.resolve([doc.password, doc.salt]);
+        if (doc == null) throw "UsernameDoesNotExist";
+        else return [doc.password, doc.salt];
       }
     );
 
     // generate hash from password/salt
     let hash = await bcrypt
       .hash(password, salt)
-      .catch((_) => Promise.reject("HashError"));
+      .catch((_) => { throw "HashError" });
 
     // compare generated hash to stored hash
-    if (dbhash != hash) return Promise.reject("IncorrectPassword");
+    if (dbhash != hash) 
+      throw "IncorrectPassword";
 
     // return jwt
-    return Promise.resolve(jwt.sign({ username }, jwtKey));
+    return jwt.sign({ username }, jwtKey);
   };
 
   // generate response
@@ -117,22 +118,22 @@ router.post("/register", (req, res) => {
   let register = async (username, password) => {
     // verify username/password are not null
     if (username == null || password == null)
-      return Promise.reject("InvalidUsernameOrPassword");
+      throw "InvalidUsernameOrPassword";
 
     // verify username does not already exist
     await Account.findOne({ username: username }).then((u) => {
-      if (u != null) return Promise.reject("UsernameAlreadyExists");
+      if (u != null) throw "UsernameAlreadyExists";
     });
 
     // generate salt
     let salt = await bcrypt
       .genSalt(10)
-      .catch((_) => Promise.reject("SaltError"));
+      .catch((_) => { throw "SaltError" });
 
     // generate hash from password/salt
     let hash = await bcrypt
       .hash(password, salt)
-      .catch((_) => Promise.reject("HashError"));
+      .catch((_) => { throw "HashError" });
 
     // insert username/hash/salt into db
     await new Account({
@@ -141,10 +142,10 @@ router.post("/register", (req, res) => {
       salt: salt,
     })
       .save()
-      .catch((_) => Promise.reject("DBInsertError"));
+      .catch((_) => { throw "DBInsertError" });
 
     // return jwt
-    return Promise.resolve(jwt.sign({ username }, jwtKey));
+    return jwt.sign({ username }, jwtKey);
   };
 
   // generate response
@@ -170,7 +171,7 @@ router.get("/states/total", (req, res) => {
       return acc;
     });
 
-    return Promise.resolve({
+    return {
       positive: final.positive,
       negative: final.negative,
       recovered: final.recovered,
@@ -179,7 +180,7 @@ router.get("/states/total", (req, res) => {
       negativeIncrease: final.negativeIncrease,
       recoveredIncrease: final.recoveredIncrease,
       deathIncrease: final.deathIncrease,
-    });
+    };
   };
 
   total()
@@ -212,52 +213,50 @@ router.get("/states/:name", (req, res) => {
 
 router.post("/towatch", (req, res) => {
   let stateFunction = async (username, selectedState) => {
-    let result = await Account.findOne({ username: username });
-    if (result.states.length === 0) {
-      selectedState.map((state) => {
-        result.states.push(state);
-      });
-      result.save();
-    } else {
-      let results = await Account.findOneAndUpdate(
-        {
-          username: username,
-        },
-        { states: selectedState }
-      );
-    }
+    // get the account associated with this username
+    let account = await Account.findOne({ username: username })
+      .catch((_) => { throw "UsernameDoesNotExist" });
+
+    // push the selected state to the watch list and update the database
+    account.states.push(selectedState);
+    account.save();
+
+    return null;
   };
+
   // generate response
   stateFunction(req.body.username, req.body.selectedState)
-    .then(() => res.sendStatus(200))
-    .catch((err) => res.status(404).send(err));
+    .then((_) => res.sendStatus(200))
+    .catch((_) => res.status(404).send(null));
 
   return;
 });
 
 router.get("/towatchData/:username", (req, res) => {
   let towatchfunction = async (username) => {
-    let result = await Account.findOne({ username: username });
-    let selectedState = result.states;
-    return Promise.resolve(selectedState);
+    // get the account associated with this username
+    let account = await Account.findOne({ username: username })
+      .catch((_) => { throw "UsernameAlreadyExists" });
+
+    return account.selectedState;
   };
+
   // generate response
   towatchfunction(req.params.username)
     .then((selectedState) => res.status(200).send(selectedState))
-    .catch((err) => res.status(404).send(err));
+    .catch((_) => res.status(404).send(null));
 
   return;
 });
 
 router.get("/testsites", (req, res) => {
   let testisitefunction = async () => {
-    const testsites = await TestSite.find({});
-    return Promise.resolve(testsites);
+    return await TestSite.find({});
   };
 
   testisitefunction()
     .then((testsites) => res.status(200).send(testsites))
-    .catch((err) => res.status(404).send(err));
+    .catch((_) => res.status(404).send(null));
 
   return;
 });
