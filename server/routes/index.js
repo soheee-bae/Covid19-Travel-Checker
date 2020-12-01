@@ -17,14 +17,7 @@ mongoose.connect("mongodb://localhost/my_db");
 var account = mongoose.Schema({
   username: String,
   password: String,
-  states: [
-    {
-      _id: 0,
-      value: String,
-      label: String,
-    },
-  ],
-  salt: String,
+  states: [String],
 });
 var Account = mongoose.model("Account", account);
 
@@ -86,20 +79,17 @@ router.post("/login", (req, res) => {
       throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
-    let [dbhash, salt] = await Account.findOne({ username: username }).then(
-      (doc) => {
-        if (doc == null) throw "UsernameDoesNotExist";
-        else return [doc.password, doc.salt];
-      }
-    );
+    let dbhash = await Account.findOne({ username: username })
+      .then((doc) => {
+        if (doc == null) 
+          throw "UsernameDoesNotExist";
+        return doc.password;
+      });
 
-    // generate hash from password/salt
-    let hash = await bcrypt
-      .hash(password, salt)
+    let res = await bcrypt.compare(password, dbhash)
       .catch((_) => { throw "HashError" });
 
-    // compare generated hash to stored hash
-    if (dbhash != hash) 
+    if (!res)
       throw "IncorrectPassword";
 
     // return jwt
@@ -135,11 +125,11 @@ router.post("/register", (req, res) => {
       .hash(password, salt)
       .catch((_) => { throw "HashError" });
 
-    // insert username/hash/salt into db
+    // insert username/hash into db
     await new Account({
       username: username,
       password: hash,
-      salt: salt,
+      states: [],
     })
       .save()
       .catch((_) => { throw "DBInsertError" });
@@ -218,7 +208,11 @@ router.post("/towatch", (req, res) => {
   let stateFunction = async (username, selectedState) => {
     // get the account associated with this username
     let account = await Account.findOne({ username: username })
-      .catch((_) => { throw "UsernameDoesNotExist" });
+      .then((res) => { 
+        if (res == null) 
+          throw "UsernameDoesNotExist"; 
+        return res 
+      });
 
     // push the selected state to the watch list and update the database
     account.states.push(selectedState);
@@ -239,9 +233,13 @@ router.get("/towatchData/:username", (req, res) => {
   let towatchfunction = async (username) => {
     // get the account associated with this username
     let account = await Account.findOne({ username: username })
-      .catch((_) => { throw "UsernameDoesNotExist" });
+      .then((res) => { 
+        if (res == null) 
+          throw "UsernameDoesNotExist"; 
+        return res 
+      });
 
-    return account.selectedState;
+    return account.states;
   };
 
   // generate response
@@ -254,7 +252,12 @@ router.get("/towatchData/:username", (req, res) => {
 
 router.get("/testsites", (req, res) => {
   let testisitefunction = async () => {
-    return await TestSite.find({});
+    return await TestSite.find({})
+      .then((doc) => {
+        if (doc == null) 
+          throw "UsernameDoesNotExist";
+        return doc;
+      });
   };
 
   testisitefunction()
@@ -263,5 +266,9 @@ router.get("/testsites", (req, res) => {
 
   return;
 });
+
+router.post("/refresh", (req, res) => {
+  
+})
 
 module.exports = router;
