@@ -55,7 +55,7 @@ const fillDatabase = async () => {
   await new Account({
     username: "admin",
     password: hash,
-    states: [],
+    states: ["E"],
     admin: true,
   }).save();
 
@@ -240,7 +240,30 @@ router.post("/towatch", (req, res) => {
   return;
 });
 
-router.get("/towatchData/:username", (req, res) => {
+router.use("/towatchData/:username", (req, res, next) => {
+  let validateToken = async (token, username) => {
+    // ensure token exists
+    if (token == null)
+      throw "InvalidJWT";
+
+    // decrypt token
+    let res = await jwt.verify(token, jwtKey);
+
+    // compare usernames
+    if (res.username != username)
+      throw "InvalidJWT";
+
+    return null;
+  }
+
+  validateToken(req.body.jwt, req.params.username)
+    .then((_) => next())
+    .catch((err) => res.status(404).send(err));
+
+    return;
+});
+
+router.post("/towatchData/:username", (req, res) => {
   let towatchfunction = async (username) => {
     // get the account associated with this username
     let account = await Account.findOne({ username: username })
