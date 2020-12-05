@@ -17,14 +17,8 @@ mongoose.connect("mongodb://localhost/my_db");
 var account = mongoose.Schema({
   username: String,
   password: String,
-  states: [
-    {
-      _id: 0,
-      value: String,
-      label: String,
-    },
-  ],
-  salt: String,
+  states: [String],
+  admin: Boolean,
 });
 var Account = mongoose.model("Account", account);
 
@@ -56,6 +50,15 @@ StateData.remove({}, (req, result) => {});
 
 // insert state data
 const fillDatabase = async () => {
+  let salt = await bcrypt.genSalt(10);
+  let hash = await bcrypt.hash("admin1", salt);
+  await new Account({
+    username: "admin",
+    password: hash,
+    states: ["E"],
+    admin: true,
+  }).save();
+
   result = await axios("https://api.covidtracking.com/v1/states/current.json");
   result.data.map(async (state) => {
     await new StateData({
@@ -83,26 +86,24 @@ router.post("/login", (req, res) => {
   let login = async (username, password) => {
     // verify username/password are not null
     if (username == null || password == null)
-      return Promise.reject("InvalidUsernameOrPassword");
+      throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
-    let [dbhash, salt] = await Account.findOne({ username: username }).then(
-      (doc) => {
-        if (doc == null) return Promise.reject("UsernameDoesNotExist");
-        else return Promise.resolve([doc.password, doc.salt]);
-      }
-    );
+    let dbhash = await Account.findOne({ username: username })
+      .then((doc) => {
+        if (doc == null) 
+          throw "UsernameDoesNotExist";
+        return doc.password;
+      });
 
-    // generate hash from password/salt
-    let hash = await bcrypt
-      .hash(password, salt)
-      .catch((_) => Promise.reject("HashError"));
+    let res = await bcrypt.compare(password, dbhash)
+      .catch((_) => { throw "HashError" });
 
-    // compare generated hash to stored hash
-    if (dbhash != hash) return Promise.reject("IncorrectPassword");
+    if (!res)
+      throw "IncorrectPassword";
 
     // return jwt
-    return Promise.resolve(jwt.sign({ username }, jwtKey));
+    return jwt.sign({ username }, jwtKey);
   };
 
   // generate response
@@ -117,40 +118,44 @@ router.post("/register", (req, res) => {
   let register = async (username, password) => {
     // verify username/password are not null
     if (username == null || password == null)
-      return Promise.reject("InvalidUsernameOrPassword");
+      throw "InvalidUsernameOrPassword";
 
     // verify username does not already exist
     await Account.findOne({ username: username }).then((u) => {
-      if (u != null) return Promise.reject("UsernameAlreadyExists");
+      if (u != null) throw "UsernameAlreadyExists";
     });
 
     // generate salt
     let salt = await bcrypt
       .genSalt(10)
-      .catch((_) => Promise.reject("SaltError"));
+      .catch((_) => { throw "SaltError" });
 
     // generate hash from password/salt
     let hash = await bcrypt
       .hash(password, salt)
-      .catch((_) => Promise.reject("HashError"));
+      .catch((_) => { throw "HashError" });
 
-    // insert username/hash/salt into db
+    // insert username/hash into db
     await new Account({
       username: username,
       password: hash,
-      salt: salt,
+      states: [],
+      admin: false,
     })
       .save()
-      .catch((_) => Promise.reject("DBInsertError"));
+      .catch((_) => { throw "DBInsertError" });
 
     // return jwt
-    return Promise.resolve(jwt.sign({ username }, jwtKey));
+    return jwt.sign({ username }, jwtKey);
   };
 
   // generate response
   register(req.body.username, req.body.password)
     .then((jwt) => res.status(200).send(jwt))
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => {
+      console.log(err)
+      res.status(404).send(err)
+    });
 
   return;
 });
@@ -170,7 +175,7 @@ router.get("/states/total", (req, res) => {
       return acc;
     });
 
-    return Promise.resolve({
+    return {
       positive: final.positive,
       negative: final.negative,
       recovered: final.recovered,
@@ -179,12 +184,12 @@ router.get("/states/total", (req, res) => {
       negativeIncrease: final.negativeIncrease,
       recoveredIncrease: final.recoveredIncrease,
       deathIncrease: final.deathIncrease,
-    });
+    };
   };
 
   total()
     .then((total) => res.status(200).send(total))
-    .catch((_) => res.status(404).send(null));
+    .catch((err) => res.status(404).send(err));
 
   return;
 });
@@ -210,40 +215,48 @@ router.get("/states/:name", (req, res) => {
   });
 });
 
-router.post("/towatch", (req, res) => {
-  let stateFunction = async (username, selectedState) => {
-    let result = await Account.findOne({ username: username });
-    if (result.states.length === 0) {
-      selectedState.map((state) => {
-        result.states.push(state);
-      });
-      result.save();
-    } else {
-      let results = await Account.findOneAndUpdate(
-        {
-          username: username,
-        },
-        { states: selectedState }
-      );
-    }
-  };
-  // generate response
-  stateFunction(req.body.username, req.body.selectedState)
-    .then(() => res.sendStatus(200))
+let validateLogin = (req, res, next) => {
+  let validateToken = async (token, username) => {
+    // ensure token exists
+    if (token == null)
+      throw "InvalidJWT";
+
+    // decrypt token
+    let res = await jwt.verify(token, jwtKey);
+
+    // compare usernames
+    if (res.username != username)
+      throw "InvalidJWT";
+
+    return null;
+  }
+
+  validateToken(req.body.jwt, req.body.username)
+    .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
   return;
-});
+}
 
-router.get("/towatchData/:username", (req, res) => {
-  let towatchfunction = async (username) => {
-    let result = await Account.findOne({ username: username });
-    let selectedState = result.states;
-    return Promise.resolve(selectedState);
-  };
-  // generate response
-  towatchfunction(req.params.username)
-    .then((selectedState) => res.status(200).send(selectedState))
+router.post("/towatch", validateLogin, (req, res) => {
+  let f = async (username, states) => {
+    // get account
+    let account = await Account.findOne({ username: username })
+      .catch((_) => { throw "UsernameDoesNotExist" });
+
+    // if a "states" is provided, 
+    if (states != null) {
+      account.states = states;
+      await account
+        .save()
+        .catch((_) => { throw "DatabaseError" });
+    };
+
+    return account.states;
+  }
+
+  f(req.body.username, req.body.states)
+    .then((states) => res.status(200).send(states))
     .catch((err) => res.status(404).send(err));
 
   return;
@@ -251,8 +264,12 @@ router.get("/towatchData/:username", (req, res) => {
 
 router.get("/testsites", (req, res) => {
   let testisitefunction = async () => {
-    const testsites = await TestSite.find({});
-    return Promise.resolve(testsites);
+    return await TestSite.find({})
+      .then((doc) => {
+        if (doc == null) 
+          throw "UsernameDoesNotExist";
+        return doc;
+      });
   };
 
   testisitefunction()
@@ -261,5 +278,9 @@ router.get("/testsites", (req, res) => {
 
   return;
 });
+
+router.post("/refresh", (req, res) => {
+  
+})
 
 module.exports = router;
