@@ -85,22 +85,19 @@ fillDatabase();
 router.post("/login", (req, res) => {
   let login = async (username, password) => {
     // verify username/password are not null
-    if (username == null || password == null)
-      throw "InvalidUsernameOrPassword";
+    if (username == null || password == null) throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
-    let dbhash = await Account.findOne({ username: username })
-      .then((doc) => {
-        if (doc == null) 
-          throw "UsernameDoesNotExist";
-        return doc.password;
-      });
+    let dbhash = await Account.findOne({ username: username }).then((doc) => {
+      if (doc == null) throw "UsernameDoesNotExist";
+      return doc.password;
+    });
 
-    let res = await bcrypt.compare(password, dbhash)
-      .catch((_) => { throw "HashError" });
+    let res = await bcrypt.compare(password, dbhash).catch((_) => {
+      throw "HashError";
+    });
 
-    if (!res)
-      throw "IncorrectPassword";
+    if (!res) throw "IncorrectPassword";
 
     // return jwt
     return jwt.sign({ username }, jwtKey);
@@ -117,8 +114,7 @@ router.post("/login", (req, res) => {
 router.post("/register", (req, res) => {
   let register = async (username, password) => {
     // verify username/password are not null
-    if (username == null || password == null)
-      throw "InvalidUsernameOrPassword";
+    if (username == null || password == null) throw "InvalidUsernameOrPassword";
 
     // verify username does not already exist
     await Account.findOne({ username: username }).then((u) => {
@@ -126,14 +122,14 @@ router.post("/register", (req, res) => {
     });
 
     // generate salt
-    let salt = await bcrypt
-      .genSalt(10)
-      .catch((_) => { throw "SaltError" });
+    let salt = await bcrypt.genSalt(10).catch((_) => {
+      throw "SaltError";
+    });
 
     // generate hash from password/salt
-    let hash = await bcrypt
-      .hash(password, salt)
-      .catch((_) => { throw "HashError" });
+    let hash = await bcrypt.hash(password, salt).catch((_) => {
+      throw "HashError";
+    });
 
     // insert username/hash into db
     await new Account({
@@ -143,7 +139,9 @@ router.post("/register", (req, res) => {
       admin: false,
     })
       .save()
-      .catch((_) => { throw "DBInsertError" });
+      .catch((_) => {
+        throw "DBInsertError";
+      });
 
     // return jwt
     return jwt.sign({ username }, jwtKey);
@@ -153,8 +151,8 @@ router.post("/register", (req, res) => {
   register(req.body.username, req.body.password)
     .then((jwt) => res.status(200).send(jwt))
     .catch((err) => {
-      console.log(err)
-      res.status(404).send(err)
+      console.log(err);
+      res.status(404).send(err);
     });
 
   return;
@@ -218,58 +216,77 @@ router.get("/states/:name", (req, res) => {
 let validateLogin = (req, res, next) => {
   let validateToken = async (token, username) => {
     // ensure token exists
-    if (token == null)
-      throw "InvalidJWT";
+    if (token == null) throw "InvalidJWT";
 
     // decrypt token
     let res = await jwt.verify(token, jwtKey);
 
     // compare usernames
-    if (res.username != username)
-      throw "InvalidJWT";
+    if (res.username != username) throw "InvalidJWT";
 
     return null;
-  }
+  };
 
   validateToken(req.body.jwt, req.body.username)
     .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
   return;
-}
+};
 
 router.post("/towatch", validateLogin, (req, res) => {
   let f = async (username, states) => {
     // get account
-    let account = await Account.findOne({ username: username })
-      .catch((_) => { throw "UsernameDoesNotExist" });
+    let account = await Account.findOne({ username: username }).catch((_) => {
+      throw "UsernameDoesNotExist";
+    });
 
-    // if a "states" is provided, 
+    // if a "states" is provided,
     if (states != null) {
+      console.log("state:" + states);
       account.states = states;
-      await account
-        .save()
-        .catch((_) => { throw "DatabaseError" });
-    };
+      await account.save().catch((_) => {
+        throw "DatabaseError";
+      });
+    }
 
     return account.states;
-  }
+  };
 
-  f(req.body.username, req.body.states)
+  f(req.body.username, req.body.selectedState)
     .then((states) => res.status(200).send(states))
     .catch((err) => res.status(404).send(err));
 
   return;
 });
 
+//get the selected state of the specific user
+router.get("/towatchdata:username", (req, res) => {
+  StateData.findOne({ name: req.params.name }, (err, doc) => {
+    
+  }
+
+  let towatchdata = async () => {
+    return await TestSite.find({}).then((doc) => {
+      if (doc == null) throw "UsernameDoesNotExist";
+      return doc;
+    });
+  };
+
+  towatchdata()
+    .then((testsites) => res.status(200).send(testsites))
+    .catch((err) => res.status(404).send(err));
+
+  return;
+});
+
+
 router.get("/testsites", (req, res) => {
   let testisitefunction = async () => {
-    return await TestSite.find({})
-      .then((doc) => {
-        if (doc == null) 
-          throw "UsernameDoesNotExist";
-        return doc;
-      });
+    return await TestSite.find({}).then((doc) => {
+      if (doc == null) throw "UsernameDoesNotExist";
+      return doc;
+    });
   };
 
   testisitefunction()
@@ -279,8 +296,6 @@ router.get("/testsites", (req, res) => {
   return;
 });
 
-router.post("/refresh", (req, res) => {
-  
-})
+router.post("/refresh", (req, res) => {});
 
 module.exports = router;
