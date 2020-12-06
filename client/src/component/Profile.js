@@ -12,37 +12,30 @@ const Profile = (props) => {
   const [webToken, setWebToken] = webtoken;
   const [multiselect, setMultiSelect] = useState([]);
   const [decoded, setDecoded] = useState("");
-  const [selectedInput, setSelected] = useState({
-    selectedState: [],
-    username: "",
-  });
 
-  useEffect(() => {
-    if (webToken === "") {
-      props.history.push({
-        pathname: "/login",
-      });
+  const init = (initList) => {
+    let statelist = initList.map((init) => {
+      return { value: init, label: init };
+    });
+    setMultiSelect(statelist);
+  };
+
+  const fetchData = async (profileobj) => {
+    const profiledata = await axios.post(
+      "http://localhost:3500/towatch",
+      profileobj,
+      {
+        withCredentials: true,
+        validateStatus: () => true,
+      }
+    );
+    if (profiledata.status === 200) {
+      alert("Updated Successfully!");
+      props.history.push({ pathname: "/" });
     } else {
-      var decoded = jwt_decode(webToken);
-      setDecoded(decoded);
-      const handleProfileBtn = async () => {
-        const data = await axios.get(
-          `http://localhost:3500/towatchData/${decoded.username}`,
-          {
-            withCredentials: true,
-            validateStatus: () => true,
-          }
-        );
-        if (data.status === 200) {
-          setMultiSelect(data.data);
-        } else {
-          alert(data.data);
-        }
-      };
-      handleProfileBtn();
-      setSelected({ ...selectedInput, username: decoded.username });
+      alert(profiledata.data);
     }
-  }, []);
+  };
 
   const profilestyle = {
     control: (base, state) => ({
@@ -129,20 +122,16 @@ const Profile = (props) => {
 
   const handleProfileBtn = async (e) => {
     e.preventDefault();
-    const data = await axios.post(
-      "http://localhost:3500/towatch",
-      selectedInput,
-      {
-        withCredentials: true,
-        validateStatus: () => true,
-      }
-    );
-    if (data.status === 200) {
-      alert("We have updated your to watch system!");
-      props.history.push("/");
-    } else {
-      alert(data.data);
-    }
+    let result = [];
+    multiselect.map((s) => {
+      result.push(s.value);
+    });
+    let profileobj = {
+      selectedState: result,
+      username: decoded.username,
+      jwt: webToken,
+    };
+    fetchData(profileobj);
   };
 
   const stateLists = stateList.map(({ State }) => {
@@ -151,8 +140,40 @@ const Profile = (props) => {
 
   const handlemultipleselect = (search) => {
     setMultiSelect(search);
-    setSelected({ ...selectedInput, selectedState: search });
   };
+
+  useEffect(() => {
+    const fetchinitData = async (profileobj) => {
+      const profiledata = await axios.post(
+        "http://localhost:3500/towatch",
+        profileobj,
+        {
+          withCredentials: true,
+          validateStatus: () => true,
+        }
+      );
+      if (profiledata.status === 200) {
+        init(profiledata.data);
+      } else {
+        alert(profiledata.data);
+      }
+    };
+
+    if (webToken === "") {
+      props.history.push({
+        pathname: "/login",
+      });
+    } else {
+      var decoded = jwt_decode(webToken);
+      setDecoded(decoded);
+      let profileobj = {
+        selectedState: null,
+        username: decoded.username,
+        jwt: webToken,
+      };
+      fetchinitData(profileobj);
+    }
+  }, []);
 
   return (
     <div className="Profile">
@@ -160,7 +181,13 @@ const Profile = (props) => {
         <div className="profile-top-container">
           <div className="profile-top-sub-container">
             <h1 className="profile-title">PROFILE</h1>
-            {/*<p className="profile-username">{decoded.username}</p>*/}
+            <p className="profile-username">{decoded.username}</p>
+            <p style={{ lineHeight: 2 }}>
+              Selected State :
+              {multiselect.map((m) => (
+                <ol>{m.value}</ol>
+              ))}
+            </p>
           </div>
           <button
             onClick={handleProfileBtn}
@@ -169,7 +196,6 @@ const Profile = (props) => {
           >
             SAVE
           </button>
-          <button>Test Button for Email</button>
         </div>
         <div className="profile-select">
           <Select
