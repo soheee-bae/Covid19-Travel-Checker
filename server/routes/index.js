@@ -3,6 +3,7 @@ var bcrypt = require("bcryptjs");
 var mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var axios = require("axios");
+var nodemailer = require("nodemailer");
 
 var router = express.Router();
 //router.use(express.json());
@@ -258,6 +259,31 @@ router.post("/towatch", validateLogin, (req, res) => {
     .catch((err) => res.status(404).send(err));
 
   return;
+});
+
+router.post("/mail", (req, res) => {
+  const getuserlist = async (dataobject) => {
+    let state = dataobject.selectedState;
+
+    let account = await Account.find({
+      states: { $all: [`${state}`] },
+    }).catch((_) => {
+      throw "UsernameDoesNotExist";
+    });
+
+    let userlist = account.map((acc) => {
+      return acc.username;
+    });
+
+    return userlist;
+  };
+
+  const mailing = async (dataobject) => {
+    let users = await getuserlist(dataobject);
+    console.log(users);
+  };
+
+  mailing(req.body);
 });
 
 router.get("/testsites", (req, res) => {
