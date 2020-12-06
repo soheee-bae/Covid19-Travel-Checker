@@ -260,27 +260,6 @@ router.post("/towatch", validateLogin, (req, res) => {
   return;
 });
 
-//get the selected state of the specific user
-router.get("/towatchdata:username", (req, res) => {
-  StateData.findOne({ name: req.params.name }, (err, doc) => {
-    
-  }
-
-  let towatchdata = async () => {
-    return await TestSite.find({}).then((doc) => {
-      if (doc == null) throw "UsernameDoesNotExist";
-      return doc;
-    });
-  };
-
-  towatchdata()
-    .then((testsites) => res.status(200).send(testsites))
-    .catch((err) => res.status(404).send(err));
-
-  return;
-});
-
-
 router.get("/testsites", (req, res) => {
   let testisitefunction = async () => {
     return await TestSite.find({}).then((doc) => {
