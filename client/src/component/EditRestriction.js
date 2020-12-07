@@ -22,7 +22,7 @@ const EditRestriction = (props) => {
       border: travel.BorderClosure,
       curfew: travel.Curfew,
       mask: travel.MaskRequirement,
-      stores: travel["NonEssentialStores Open"],
+      stores: travel.NonEssentialStoresOpen,
       restaurants: travel.RestaurantsOpen,
     });
   }, []);

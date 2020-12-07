@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var axios = require("axios");
 var nodemailer = require("nodemailer");
-
+var restrictionData = require("../restrictions/restrictions.json");
 var router = express.Router();
 //router.use(express.json());
 
@@ -37,9 +37,21 @@ var stateData = mongoose.Schema({
   deathIncrease: Number,
 
   lastUpdated: String,
-  policy: String,
 });
 var StateData = mongoose.model("StateData", stateData);
+
+//create state Restriction schema
+var stateRestriction = mongoose.Schema({
+  State: String,
+  Abbreviation: String,
+  TravelerRestrictions: String,
+  BorderClosure: String,
+  Curfew: String,
+  MaskRequirement: String,
+  NonEssentialStoresOpen: String,
+  RestaurantsOpen: String,
+});
+var StateRestriction = mongoose.model("StateRestriction", stateRestriction);
 
 //create testsite schema
 let Schema = mongoose.Schema;
@@ -76,11 +88,24 @@ const fillDatabase = async () => {
       deathIncrease: state.deathIncrease,
 
       lastUpdated: state.lastUpdateEt,
+    }).save();
+  });
 
-      policy: "dont get sick",
+  //inset restrictions of state data
+  restrictionData.map(async (state) => {
+    await new StateRestriction({
+      State: state.State,
+      Abbreviation: state.Abbreviation,
+      TravelerRestrictions: state.TravelerRestrictions,
+      BorderClosure: state.BorderClosure,
+      Curfew: state.Curfew,
+      MaskRequirement: state.MaskRequirement,
+      NonEssentialStoresOpen: state.NonEssentialStoresOpen,
+      RestaurantsOpen: state.RestaurantsOpen,
     }).save();
   });
 };
+
 fillDatabase();
 
 router.post("/login", (req, res) => {
@@ -208,8 +233,23 @@ router.get("/states/:name", (req, res) => {
       positiveIncrease: doc.positiveIncrease,
       negativeIncrease: doc.negativeIncrease,
 
-      policy: doc.policy,
       lastUpdated: doc.lastUpdated,
+    });
+  });
+});
+
+router.get("/staterestriction/:name", (req, res) => {
+  StateRestriction.findOne({ State: req.params.name }, (err, doc) => {
+    if (err || doc == null) return res.sendStatus(404);
+    return res.status(200).send({
+      State: doc.State,
+      Abbreviation: doc.Abbreviation,
+      TravelerRestrictions: doc.TravelerRestrictions,
+      BorderClosure: doc.BorderClosure,
+      Curfew: doc.Curfew,
+      MaskRequirement: doc.MaskRequirement,
+      NonEssentialStoresOpen: doc.NonEssentialStoresOpen,
+      RestaurantsOpen: doc.RestaurantsOpen,
     });
   });
 });
@@ -261,7 +301,35 @@ router.post("/towatch", validateLogin, (req, res) => {
   return;
 });
 
+router.post("/stateset", (req, res) => {
+  let setPolicy = async (state, policy, restrictions, ...etc) => {
+    let st = await StateData.findOne({ name: state }).catch((_) => {
+      throw "StateDoesNotExist";
+    });
+
+    // if policy != null
+    //  st.policy = policy
+
+    // if restrictions != null
+    //  st.restrictions = restructions
+
+    // if ... != null
+    //  ... etc
+
+    st.save();
+
+    // send email to every watching this state
+  };
+
+  setPolicy(req.body.state, req.body.policy)
+    .then((_) => res.status(200).send(null))
+    .catch((err) => res.status(404).send(err));
+
+  return;
+});
+
 router.post("/mail", (req, res) => {
+  //Get the list of users who selected the target state
   const getuserlist = async (dataobject) => {
     let state = dataobject.selectedState;
 
@@ -278,9 +346,35 @@ router.post("/mail", (req, res) => {
     return userlist;
   };
 
+  //Send email to users
   const mailing = async (dataobject) => {
     let users = await getuserlist(dataobject);
-    console.log(users);
+
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "fireferrets.project@gmail.com",
+        pass: "cscea470",
+      },
+    });
+
+    var mailOptions = {
+      from: "fireferrets.project@gmail.com",
+      to: `${users.toString()}`,
+      subject: "There is an update on your state!",
+      text: "That was easy!",
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
   };
 
   mailing(req.body);

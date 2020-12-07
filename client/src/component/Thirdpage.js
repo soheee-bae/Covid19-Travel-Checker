@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { stateContext } from "../App";
-import restrictions from "../restrictions/restrictions.json";
+import axios from "axios";
 
 const Thirdpage = () => {
   const { selectedState, setSelectedState } = useContext(stateContext);
@@ -17,23 +17,32 @@ const Thirdpage = () => {
   const [stores, SetStores] = useState([]);
   const [restaurants, SetRestaurants] = useState([]);
   const [selectedStateUpper, SetUpper] = useState([]);
-  console.log(airlineEntry);
 
   useEffect(() => {
-    restrictions.map((travelerRestriction) => {
-      if (travelerRestriction.State === selectedState) {
-        setTravelerRestrictions(travelerRestriction);
-        SetEntry(travelerRestriction.TravelerRestrictions);
-        SetBorder(travelerRestriction.BorderClosure);
-        SetCurfew(travelerRestriction.Curfew);
-        SetMask(travelerRestriction.MaskRequirement);
-        SetStores(travelerRestriction["NonEssentialStores Open"]);
-        SetRestaurants(travelerRestriction.RestaurantsOpen);
+    const fetchdata = async () => {
+      const restrictions = await axios.get(
+        `http://localhost:3500/staterestriction/${selectedState}`,
+        {
+          withCredentials: true,
+          validateStatus: () => true,
+        }
+      );
+
+      if (restrictions.status === 200) {
+        let restrictiondata = restrictions.data;
+        setTravelerRestrictions(restrictiondata);
+        SetEntry(restrictiondata.TravelerRestrictions);
+        SetBorder(restrictiondata.BorderClosure);
+        SetCurfew(restrictiondata.Curfew);
+        SetMask(restrictiondata.MaskRequirement);
+        SetStores(restrictiondata.NonEssentialStoresOpen);
+        SetRestaurants(restrictiondata.RestaurantsOpen);
         SetUpper(selectedState.toUpperCase());
       } else {
-        return null;
+        alert(restrictions.data);
       }
-    });
+    };
+    fetchdata();
   }, []);
 
   return (
@@ -90,16 +99,17 @@ const Thirdpage = () => {
           </div>
           <h5>{restaurants}</h5>
         </div>
+        <Link
+          style={{ textDecoration: "none" }}
+          to={{
+            pathname: "/EditRestriction",
+            state: { travelerRestrictions: travelerRestrictions },
+          }}
+        >
+          <button className="edit-btn">Edit Restrictions</button>
+        </Link>
       </div>
-      <Link
-        style={{ textDecoration: "none" }}
-        to={{
-          pathname: "/EditRestriction",
-          state: { travelerRestrictions: travelerRestrictions },
-        }}
-      >
-        <button className="edit-btn">Edit Restrictions</button>
-      </Link>
+
       {/*This section is just for the arrow to previous and next pages*/}
       <div className="right-arrow-icon">
         <Link
