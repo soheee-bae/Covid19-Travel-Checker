@@ -48,3 +48,8 @@ body {
     padding: 2%;
     color: black
   }
+
+  .left{
+    text-align: left;
+    padding: 5%;
+  }
