@@ -8,7 +8,7 @@ const Contact = () => {
     <div className="Contact">
     <div className="mainContent-area">
     <h1>Contact Information</h1>
-    <div id="boxText">
+    <div id="box">
     <h4>Do you have questions or bugs found relating to this website?</h4>
     <br></br>
     <h4>Or are you curious about this project?</h4>

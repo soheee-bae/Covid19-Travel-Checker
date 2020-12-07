@@ -49,3 +49,7 @@ body {
     padding: 2%;
     color: black
   }
+
+  .centerIMG{
+    text-align: center;
+  }
