@@ -108,6 +108,48 @@ const fillDatabase = async () => {
 
 fillDatabase();
 
+let validateLogin = (req, res, next) => {
+  let validateToken = async (token, username) => {
+    // ensure token exists
+    if (token == null) throw "InvalidJWT";
+
+    // decrypt token
+    let res = await jwt.verify(token, jwtKey);
+
+    // compare usernames
+    if (res.username != username) throw "InvalidJWT";
+
+    return null;
+  };
+
+  validateToken(req.body.jwt, req.body.username)
+    .then((_) => next())
+    .catch((err) => res.status(404).send(err));
+
+  return;
+};
+
+let validateAdmin = (req, res, next) => {
+  let validateAdm = async (username) => {
+    let account = await Account.findOne({ username: username }).then((doc) => {
+      if (doc == null) throw "UsernameDoesNotExist";
+      return doc;
+    });
+
+    if (account.admin == false) {
+      throw "AccountNotAdmin";
+    }
+
+    return null;
+  }
+
+  validateAdm(req.body.username)
+    .then((_) => next())
+    .catch((err) => res.status(404).send(err));
+
+  return;
+}
+
 router.post("/login", (req, res) => {
   let login = async (username, password) => {
     // verify username/password are not null
@@ -254,27 +296,6 @@ router.get("/staterestriction/:name", (req, res) => {
   });
 });
 
-let validateLogin = (req, res, next) => {
-  let validateToken = async (token, username) => {
-    // ensure token exists
-    if (token == null) throw "InvalidJWT";
-
-    // decrypt token
-    let res = await jwt.verify(token, jwtKey);
-
-    // compare usernames
-    if (res.username != username) throw "InvalidJWT";
-
-    return null;
-  };
-
-  validateToken(req.body.jwt, req.body.username)
-    .then((_) => next())
-    .catch((err) => res.status(404).send(err));
-
-  return;
-};
-
 router.post("/towatch", validateLogin, (req, res) => {
   let f = async (username, states) => {
     // get account
@@ -301,7 +322,7 @@ router.post("/towatch", validateLogin, (req, res) => {
   return;
 });
 
-router.put("/stateset", (req, res) => {
+router.post("/stateset", validateLogin, validateAdmin, (req, res) => {
   let setPolicy = async (restriction) => {
     const {
       selectedState,
@@ -313,11 +334,10 @@ router.put("/stateset", (req, res) => {
       restaurants,
     } = restriction;
 
-    let st = await StateRestriction.findOne({ State: selectedState }).catch(
-      (_) => {
-        throw "StateDoesNotExist";
-      }
-    );
+    let st = await StateRestriction.findOne({ State: selectedState }).then((doc) => {
+      if (doc == null) throw "StateDoesNotExist";
+      return doc;
+    });
 
     if (restriction != null) {
       st.TravelerRestrictions = airlineEntry;
