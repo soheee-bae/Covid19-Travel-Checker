@@ -156,19 +156,19 @@ router.post("/login", (req, res) => {
     if (username == null || password == null) throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
-    let dbhash = await Account.findOne({ username: username }).then((doc) => {
+    let doc = await Account.findOne({ username: username }).then((doc) => {
       if (doc == null) throw "UsernameDoesNotExist";
-      return doc.password;
+      return doc;
     });
 
-    let res = await bcrypt.compare(password, dbhash).catch((_) => {
+    let res = await bcrypt.compare(password, doc.password).catch((_) => {
       throw "HashError";
     });
 
     if (!res) throw "IncorrectPassword";
 
     // return jwt
-    return jwt.sign({ username }, jwtKey);
+    return {admin: doc.admin, jwt: jwt.sign({ username }, jwtKey)};
   };
 
   // generate response
