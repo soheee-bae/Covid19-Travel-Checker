@@ -108,25 +108,66 @@ const fillDatabase = async () => {
 
 fillDatabase();
 
+let validateLogin = (req, res, next) => {
+  let validateToken = async (token) => {
+    // ensure token exists
+    if (token == null) throw "InvalidJWT";
+
+    // decrypt token
+    let res = await jwt.verify(token, jwtKey);
+
+    // set username to username found within jwt
+    req.body.username = res.username;
+    return null;
+  };
+
+  validateToken(req.body.jwt)
+    .then((_) => next())
+    .catch((err) => res.status(404).send(err));
+
+  return;
+};
+
+let validateAdmin = (req, res, next) => {
+  let validateAdm = async (username) => {
+    let account = await Account.findOne({ username: username }).then((doc) => {
+      if (doc == null) throw "UsernameDoesNotExist";
+      return doc;
+    });
+
+    if (account.admin == false) {
+      throw "AccountNotAdmin";
+    }
+
+    return null;
+  }
+
+  validateAdm(req.body.username)
+    .then((_) => next())
+    .catch((err) => res.status(404).send(err));
+
+  return;
+}
+
 router.post("/login", (req, res) => {
   let login = async (username, password) => {
     // verify username/password are not null
     if (username == null || password == null) throw "InvalidUsernameOrPassword";
 
     // extract password/salt for this username
-    let dbhash = await Account.findOne({ username: username }).then((doc) => {
+    let doc = await Account.findOne({ username: username }).then((doc) => {
       if (doc == null) throw "UsernameDoesNotExist";
-      return doc.password;
+      return doc;
     });
 
-    let res = await bcrypt.compare(password, dbhash).catch((_) => {
+    let res = await bcrypt.compare(password, doc.password).catch((_) => {
       throw "HashError";
     });
 
     if (!res) throw "IncorrectPassword";
 
     // return jwt
-    return jwt.sign({ username }, jwtKey);
+    return {admin: doc.admin, jwt: jwt.sign({ username }, jwtKey)};
   };
 
   // generate response
@@ -254,27 +295,6 @@ router.get("/staterestriction/:name", (req, res) => {
   });
 });
 
-let validateLogin = (req, res, next) => {
-  let validateToken = async (token, username) => {
-    // ensure token exists
-    if (token == null) throw "InvalidJWT";
-
-    // decrypt token
-    let res = await jwt.verify(token, jwtKey);
-
-    // compare usernames
-    if (res.username != username) throw "InvalidJWT";
-
-    return null;
-  };
-
-  validateToken(req.body.jwt, req.body.username)
-    .then((_) => next())
-    .catch((err) => res.status(404).send(err));
-
-  return;
-};
-
 router.post("/towatch", validateLogin, (req, res) => {
   let f = async (username, states) => {
     // get account
@@ -301,7 +321,7 @@ router.post("/towatch", validateLogin, (req, res) => {
   return;
 });
 
-router.put("/stateset", (req, res) => {
+router.post("/stateset", validateLogin, validateAdmin, (req, res) => {
   let setPolicy = async (restriction) => {
     const {
       selectedState,
@@ -313,11 +333,10 @@ router.put("/stateset", (req, res) => {
       restaurants,
     } = restriction;
 
-    let st = await StateRestriction.findOne({ State: selectedState }).catch(
-      (_) => {
-        throw "StateDoesNotExist";
-      }
-    );
+    let st = await StateRestriction.findOne({ State: selectedState }).then((doc) => {
+      if (doc == null) throw "StateDoesNotExist";
+      return doc;
+    });
 
     if (restriction != null) {
       st.TravelerRestrictions = airlineEntry;
