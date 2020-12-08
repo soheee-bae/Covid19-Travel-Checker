@@ -301,27 +301,38 @@ router.post("/towatch", validateLogin, (req, res) => {
   return;
 });
 
-router.post("/stateset", (req, res) => {
-  let setPolicy = async (state, policy, restrictions, ...etc) => {
-    let st = await StateData.findOne({ name: state }).catch((_) => {
-      throw "StateDoesNotExist";
+router.put("/stateset", (req, res) => {
+  let setPolicy = async (restriction) => {
+    const {
+      selectedState,
+      airlineEntry,
+      border,
+      curfew,
+      mask,
+      stores,
+      restaurants,
+    } = restriction;
+
+    let st = await StateRestriction.findOne({ State: selectedState }).catch(
+      (_) => {
+        throw "StateDoesNotExist";
+      }
+    );
+
+    if (restriction != null) {
+      st.TravelerRestrictions = airlineEntry;
+      st.BorderClosure = border;
+      st.Curfew = curfew;
+      st.MaskRequirement = mask;
+      st.NonEssentialStoresOpen = stores;
+      st.RestaurantsOpen = restaurants;
+    }
+    await st.save().catch((_) => {
+      throw "DatabaseError";
     });
-
-    // if policy != null
-    //  st.policy = policy
-
-    // if restrictions != null
-    //  st.restrictions = restructions
-
-    // if ... != null
-    //  ... etc
-
-    st.save();
-
-    // send email to every watching this state
   };
 
-  setPolicy(req.body.state, req.body.policy)
+  setPolicy(req.body)
     .then((_) => res.status(200).send(null))
     .catch((err) => res.status(404).send(err));
 
@@ -357,15 +368,29 @@ router.post("/mail", (req, res) => {
       secure: true,
       auth: {
         user: "fireferrets.project@gmail.com",
-        pass: "cscea470",
+        pass: "mwnrzfkbyedzggce",
       },
     });
+
+    var mailbody = `
+    <h1>Hi!,</h1>We are sending you this email to let you know that there is an update on your state.<br>
+    <BLOCKQUOTE>
+    <B>State:</B> ${dataobject.selectedState},<br>
+    <B>TravelerRestrictions:</B> ${dataobject.airlineEntry},<br>
+    <B>BorderClosure:</B> ${dataobject.border},<br>
+    <B>Curfew:</B> ${dataobject.curfew},<br>
+    <B>MaskRequirement:</B> ${dataobject.mask},<br>
+    <B>Non Essential Stores Open:</B> ${dataobject.stores},<br>
+    <B>Restaurants Open:</B> ${dataobject.restaurants},<br>
+    </BLOCKQUOTE><br>
+    </B>Thank you for joining us.</B><br>
+    <br>Regards,<br>FireFerrets`;
 
     var mailOptions = {
       from: "fireferrets.project@gmail.com",
       to: `${users.toString()}`,
       subject: "There is an update on your state!",
-      text: "That was easy!",
+      html: mailbody,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {

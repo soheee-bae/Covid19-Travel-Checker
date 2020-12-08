@@ -14,6 +14,22 @@ const EditRestriction = (props) => {
     restaurants: "",
   });
 
+  const sendEmail = async () => {
+    const mail = await axios.post(
+      "http://localhost:3500/mail",
+      travelerRestrictions,
+      {
+        withCredentials: true,
+        validateStatus: () => true,
+      }
+    );
+    if (mail.status === 200) {
+      alert("Email sent Successfully!");
+    } else {
+      alert(mail.data);
+    }
+  };
+
   useEffect(() => {
     let travel = props.location.state.travelerRestrictions;
     setTravelerRestrictions({
@@ -27,23 +43,21 @@ const EditRestriction = (props) => {
     });
   }, []);
 
-  const handleEditBtn = () => {
-    const fetchData = async () => {
-      const mail = await axios.post(
-        "http://localhost:3500/mail",
-        travelerRestrictions,
-        {
-          withCredentials: true,
-          validateStatus: () => true,
-        }
-      );
-      if (mail.status === 200) {
-        alert("Email sent Successfully!");
-      } else {
-        alert(mail.data);
+  const handleEditBtn = async (e) => {
+    e.preventDefault();
+    const data = await axios.put(
+      `http://localhost:3500/stateset`,
+      travelerRestrictions,
+      {
+        withCredentials: true,
+        validateStatus: () => true,
       }
-    };
-    fetchData();
+    );
+    if (data.status === 200) {
+      sendEmail();
+    } else {
+      console.log(data.data);
+    }
   };
 
   return (
