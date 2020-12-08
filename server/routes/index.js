@@ -140,14 +140,14 @@ let validateAdmin = (req, res, next) => {
     }
 
     return null;
-  }
+  };
 
   validateAdm(req.body.username)
     .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
   return;
-}
+};
 
 router.post("/login", (req, res) => {
   let login = async (username, password) => {
@@ -167,7 +167,7 @@ router.post("/login", (req, res) => {
     if (!res) throw "IncorrectPassword";
 
     // return jwt
-    return {admin: doc.admin, jwt: jwt.sign({ username }, jwtKey)};
+    return { admin: doc.admin, jwt: jwt.sign({ username }, jwtKey) };
   };
 
   // generate response
@@ -211,7 +211,7 @@ router.post("/register", (req, res) => {
       });
 
     // return jwt
-    return jwt.sign({ username }, jwtKey);
+    return { admin: false, jwt: jwt.sign({ username }, jwtKey) };
   };
 
   // generate response
@@ -333,10 +333,12 @@ router.post("/stateset", validateLogin, validateAdmin, (req, res) => {
       restaurants,
     } = restriction;
 
-    let st = await StateRestriction.findOne({ State: selectedState }).then((doc) => {
-      if (doc == null) throw "StateDoesNotExist";
-      return doc;
-    });
+    let st = await StateRestriction.findOne({ State: selectedState }).then(
+      (doc) => {
+        if (doc == null) throw "StateDoesNotExist";
+        return doc;
+      }
+    );
 
     if (restriction != null) {
       st.TravelerRestrictions = airlineEntry;

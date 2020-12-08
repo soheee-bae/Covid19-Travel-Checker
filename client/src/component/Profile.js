@@ -129,7 +129,7 @@ const Profile = (props) => {
     let profileobj = {
       selectedState: result,
       username: decoded.username,
-      jwt: webToken,
+      jwt: webToken.jwt,
     };
     fetchData(profileobj);
   };
@@ -159,17 +159,17 @@ const Profile = (props) => {
       }
     };
 
-    if (webToken === "") {
+    if (!webToken.jwt) {
       props.history.push({
         pathname: "/login",
       });
     } else {
-      var decoded = jwt_decode(webToken);
+      var decoded = jwt_decode(webToken.jwt);
       setDecoded(decoded);
       let profileobj = {
         selectedState: null,
         username: decoded.username,
-        jwt: webToken,
+        jwt: webToken.jwt,
       };
       fetchinitData(profileobj);
     }
