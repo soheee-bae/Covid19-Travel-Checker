@@ -5,9 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { stateContext } from "../App";
+import { covidContext } from "../App";
 import axios from "axios";
 
 const Thirdpage = () => {
+  const { webtoken } = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
   const { selectedState, setSelectedState } = useContext(stateContext);
   const [travelerRestrictions, setTravelerRestrictions] = useState({});
   const [airlineEntry, SetEntry] = useState([]);
@@ -17,7 +20,7 @@ const Thirdpage = () => {
   const [stores, SetStores] = useState([]);
   const [restaurants, SetRestaurants] = useState([]);
   const [selectedStateUpper, SetUpper] = useState([]);
-
+  console.log(webToken);
   useEffect(() => {
     const fetchdata = async () => {
       const restrictions = await axios.get(
@@ -99,15 +102,17 @@ const Thirdpage = () => {
           </div>
           <h5>{restaurants}</h5>
         </div>
-        <Link
-          style={{ textDecoration: "none" }}
-          to={{
-            pathname: "/EditRestriction",
-            state: { travelerRestrictions: travelerRestrictions },
-          }}
-        >
-          <button className="edit-btn">Edit Restrictions</button>
-        </Link>
+        {webToken.admin && webToken ? (
+          <Link
+            style={{ textDecoration: "none" }}
+            to={{
+              pathname: "/EditRestriction",
+              state: { travelerRestrictions: travelerRestrictions },
+            }}
+          >
+            <button className="edit-btn">Edit Restrictions</button>
+          </Link>
+        ) : null}
       </div>
 
       {/*This section is just for the arrow to previous and next pages*/}

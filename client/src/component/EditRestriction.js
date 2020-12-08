@@ -2,10 +2,16 @@ import React, { useContext, useState, useEffect } from "react";
 import { stateContext } from "../App";
 import axios from "axios";
 import "../styles/EditRestriction.css";
+import { covidContext } from "../App";
+import jwt_decode from "jwt-decode";
 
 const EditRestriction = (props) => {
   const { selectedState, setSelectedState } = useContext(stateContext);
+  const { webtoken } = useContext(covidContext);
+  const [webToken, setWebToken] = webtoken;
   const [travelerRestrictions, setTravelerRestrictions] = useState({
+    jwt: "",
+    username: "",
     selectedState: "",
     airlineEntry: "",
     border: "",
@@ -33,7 +39,10 @@ const EditRestriction = (props) => {
 
   useEffect(() => {
     let travel = props.location.state.travelerRestrictions;
+    var decoded = jwt_decode(webToken.jwt);
     setTravelerRestrictions({
+      username: decoded.username,
+      jwt: webToken.jwt,
       selectedState: selectedState,
       airlineEntry: travel.TravelerRestrictions,
       border: travel.BorderClosure,
@@ -46,7 +55,7 @@ const EditRestriction = (props) => {
 
   const handleEditBtn = async (e) => {
     e.preventDefault();
-    const data = await axios.put(
+    const data = await axios.post(
       `http://localhost:3500/stateset`,
       travelerRestrictions,
       {
@@ -56,6 +65,9 @@ const EditRestriction = (props) => {
     );
     if (data.status === 200) {
       sendEmail();
+      props.history.push({
+        pathname: "/restrictions-on-travelers",
+      });
     } else {
       console.log(data.data);
     }
