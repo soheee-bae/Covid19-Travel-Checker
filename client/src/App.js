@@ -13,6 +13,7 @@ import Thirdpage from "./component/Thirdpage";
 import Testsitepage from "./component/Testsitepage";
 import Signup from "./component/SignupPage";
 import Profile from "./component/Profile";
+import EditRestriction from "./component/EditRestriction";
 
 export const covidContext = React.createContext({});
 export const stateContext = React.createContext();
@@ -47,7 +48,7 @@ function App() {
               <Route path="/state-covid19-dashboard" component={Secondpage} />
               <Route path="/profile" component={Profile} />
               <Route path="/restrictions-on-travelers" component={Thirdpage} />
-
+              <Route path="/EditRestriction" component={EditRestriction} />
               <Route path="/test-site-location" component={Testsitepage} />
             </Switch>
           </div>

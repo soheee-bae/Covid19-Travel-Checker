@@ -3,7 +3,8 @@ var bcrypt = require("bcryptjs");
 var mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var axios = require("axios");
-
+var nodemailer = require("nodemailer");
+var restrictionData = require("../restrictions/restrictions.json");
 var router = express.Router();
 //router.use(express.json());
 
@@ -36,9 +37,21 @@ var stateData = mongoose.Schema({
   deathIncrease: Number,
 
   lastUpdated: String,
-  policy: String,
 });
 var StateData = mongoose.model("StateData", stateData);
+
+//create state Restriction schema
+var stateRestriction = mongoose.Schema({
+  State: String,
+  Abbreviation: String,
+  TravelerRestrictions: String,
+  BorderClosure: String,
+  Curfew: String,
+  MaskRequirement: String,
+  NonEssentialStoresOpen: String,
+  RestaurantsOpen: String,
+});
+var StateRestriction = mongoose.model("StateRestriction", stateRestriction);
 
 //create testsite schema
 let Schema = mongoose.Schema;
@@ -75,11 +88,24 @@ const fillDatabase = async () => {
       deathIncrease: state.deathIncrease,
 
       lastUpdated: state.lastUpdateEt,
+    }).save();
+  });
 
-      policy: "dont get sick",
+  //inset restrictions of state data
+  restrictionData.map(async (state) => {
+    await new StateRestriction({
+      State: state.State,
+      Abbreviation: state.Abbreviation,
+      TravelerRestrictions: state.TravelerRestrictions,
+      BorderClosure: state.BorderClosure,
+      Curfew: state.Curfew,
+      MaskRequirement: state.MaskRequirement,
+      NonEssentialStoresOpen: state.NonEssentialStoresOpen,
+      RestaurantsOpen: state.RestaurantsOpen,
     }).save();
   });
 };
+
 fillDatabase();
 
 router.post("/login", (req, res) => {
@@ -207,8 +233,23 @@ router.get("/states/:name", (req, res) => {
       positiveIncrease: doc.positiveIncrease,
       negativeIncrease: doc.negativeIncrease,
 
-      policy: doc.policy,
       lastUpdated: doc.lastUpdated,
+    });
+  });
+});
+
+router.get("/staterestriction/:name", (req, res) => {
+  StateRestriction.findOne({ State: req.params.name }, (err, doc) => {
+    if (err || doc == null) return res.sendStatus(404);
+    return res.status(200).send({
+      State: doc.State,
+      Abbreviation: doc.Abbreviation,
+      TravelerRestrictions: doc.TravelerRestrictions,
+      BorderClosure: doc.BorderClosure,
+      Curfew: doc.Curfew,
+      MaskRequirement: doc.MaskRequirement,
+      NonEssentialStoresOpen: doc.NonEssentialStoresOpen,
+      RestaurantsOpen: doc.RestaurantsOpen,
     });
   });
 });
@@ -258,6 +299,110 @@ router.post("/towatch", validateLogin, (req, res) => {
     .catch((err) => res.status(404).send(err));
 
   return;
+});
+
+router.put("/stateset", (req, res) => {
+  let setPolicy = async (restriction) => {
+    const {
+      selectedState,
+      airlineEntry,
+      border,
+      curfew,
+      mask,
+      stores,
+      restaurants,
+    } = restriction;
+
+    let st = await StateRestriction.findOne({ State: selectedState }).catch(
+      (_) => {
+        throw "StateDoesNotExist";
+      }
+    );
+
+    if (restriction != null) {
+      st.TravelerRestrictions = airlineEntry;
+      st.BorderClosure = border;
+      st.Curfew = curfew;
+      st.MaskRequirement = mask;
+      st.NonEssentialStoresOpen = stores;
+      st.RestaurantsOpen = restaurants;
+    }
+    await st.save().catch((_) => {
+      throw "DatabaseError";
+    });
+  };
+
+  setPolicy(req.body)
+    .then((_) => res.status(200).send(null))
+    .catch((err) => res.status(404).send(err));
+
+  return;
+});
+
+router.post("/mail", (req, res) => {
+  //Get the list of users who selected the target state
+  const getuserlist = async (dataobject) => {
+    let state = dataobject.selectedState;
+
+    let account = await Account.find({
+      states: { $all: [`${state}`] },
+    }).catch((_) => {
+      throw "UsernameDoesNotExist";
+    });
+
+    let userlist = account.map((acc) => {
+      return acc.username;
+    });
+
+    return userlist;
+  };
+
+  //Send email to users
+  const mailing = async (dataobject) => {
+    let users = await getuserlist(dataobject);
+
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "fireferrets.project@gmail.com",
+        pass: "mwnrzfkbyedzggce",
+      },
+    });
+
+    var mailbody = `
+    <h1>Hi!,</h1>We are sending you this email to let you know that there is an update on your state.<br>
+    <BLOCKQUOTE>
+    <B>State:</B> ${dataobject.selectedState},<br>
+    <B>TravelerRestrictions:</B> ${dataobject.airlineEntry},<br>
+    <B>BorderClosure:</B> ${dataobject.border},<br>
+    <B>Curfew:</B> ${dataobject.curfew},<br>
+    <B>MaskRequirement:</B> ${dataobject.mask},<br>
+    <B>Non Essential Stores Open:</B> ${dataobject.stores},<br>
+    <B>Restaurants Open:</B> ${dataobject.restaurants},<br>
+    </BLOCKQUOTE><br>
+    </B>Thank you for joining us.</B><br>
+    <br>Regards,<br>FireFerrets`;
+
+    var mailOptions = {
+      from: "fireferrets.project@gmail.com",
+      to: `${users.toString()}`,
+      subject: "There is an update on your state!",
+      html: mailbody,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+  };
+
+  mailing(req.body);
 });
 
 router.get("/testsites", (req, res) => {
