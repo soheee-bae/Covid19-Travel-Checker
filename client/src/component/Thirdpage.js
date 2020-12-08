@@ -59,7 +59,7 @@ const Thirdpage = () => {
         </Link>
       </div>
       <div className="mainContent-area">
-        <h2>
+        <h2 style={{ marginBottom: "2rem" }}>
           THE FOLLOWING RESTRICTIONS APPLY IN{" "}
           <span style={{ color: "#ff073a" }}>{selectedStateUpper}</span>
         </h2>

@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { stateContext } from "../App";
 import axios from "axios";
+import "../styles/EditRestriction.css";
 
 const EditRestriction = (props) => {
   const { selectedState, setSelectedState } = useContext(stateContext);
@@ -62,85 +63,108 @@ const EditRestriction = (props) => {
 
   return (
     <div className="EditRestriction">
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.airlineEntry}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            airlineEntry: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.border}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            border: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.curfew}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            curfew: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.mask}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            mask: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.stores}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            stores: e.target.value,
-          });
-        }}
-      />
-      <input
-        className="input"
-        type="text"
-        autoFocus
-        required
-        value={travelerRestrictions.restaurants}
-        onChange={(e) => {
-          setTravelerRestrictions({
-            ...travelerRestrictions,
-            restaurants: e.target.value,
-          });
-        }}
-      />
-      <button onClick={handleEditBtn}>Submit</button>
+      <div className="editRestriction-main">
+        <div className="editRestriction-item">
+          <p>Restrictions on Travelers : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.airlineEntry}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                airlineEntry: e.target.value,
+              });
+            }}
+          />
+        </div>
+        <div className="editRestriction-item">
+          <p>Border Restrictions : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.border}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                border: e.target.value,
+              });
+            }}
+          />
+        </div>
+        <div className="editRestriction-item">
+          <p>Curfew : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.curfew}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                curfew: e.target.value,
+              });
+            }}
+          />
+        </div>
+        <div className="editRestriction-item">
+          <p>Mask Mandates : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.mask}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                mask: e.target.value,
+              });
+            }}
+          />
+        </div>
+        <div className="editRestriction-item">
+          <p>Are non essential stores open? : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.stores}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                stores: e.target.value,
+              });
+            }}
+          />
+        </div>
+        <div className="editRestriction-item">
+          <p>Are restaurants open? : </p>
+          <textarea
+            className="input"
+            type="text"
+            autoFocus
+            required
+            value={travelerRestrictions.restaurants}
+            onChange={(e) => {
+              setTravelerRestrictions({
+                ...travelerRestrictions,
+                restaurants: e.target.value,
+              });
+            }}
+          />
+        </div>
+
+        <button className="edit-btn" onClick={handleEditBtn}>
+          Submit
+        </button>
+      </div>
     </div>
   );
 };
