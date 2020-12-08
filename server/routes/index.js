@@ -109,20 +109,19 @@ const fillDatabase = async () => {
 fillDatabase();
 
 let validateLogin = (req, res, next) => {
-  let validateToken = async (token, username) => {
+  let validateToken = async (token) => {
     // ensure token exists
     if (token == null) throw "InvalidJWT";
 
     // decrypt token
     let res = await jwt.verify(token, jwtKey);
 
-    // compare usernames
-    if (res.username != username) throw "InvalidJWT";
-
+    // set username to username found within jwt
+    req.body.username = res.username;
     return null;
   };
 
-  validateToken(req.body.jwt, req.body.username)
+  validateToken(req.body.jwt)
     .then((_) => next())
     .catch((err) => res.status(404).send(err));
 
