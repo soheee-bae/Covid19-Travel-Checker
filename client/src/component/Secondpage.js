@@ -29,20 +29,55 @@ const Secondpage = () => {
   const [stateName, setStateName] = useState(selectState);
   const [stateAbrev, setStateAbrev] = useState("");
 
+  const [positive1, setPositive1] = useState("");
+
+  let today = new Date();
+  let date1 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-1);
+  let date2 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-2);
+  let date3 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-3);
+  let date4 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-4);
+  let date5 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-5);
+  let date6 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-6);
+  let date7 = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-7);
+
+  let positive2 = positive - positiveIncrease;
+  let positive3 = positive - positiveIncrease*2;
+  let positive4 = positive - positiveIncrease*3;
+  let positive5 = positive - positiveIncrease*4;
+  let positive6 = positive - positiveIncrease*5;
+  let positive7 = positive - positiveIncrease*6;
+
+  let tested2 = tested - testedIncrease;
+  let tested3 = tested - testedIncrease*2;
+  let tested4 = tested - testedIncrease*3;
+  let tested5 = tested - testedIncrease*4;
+  let tested6 = tested - testedIncrease*5;
+  let tested7 = tested - testedIncrease*6;
+
+  let recovered2 = recovered - recoveredIncrease;
+  let recovered3 = recovered - recoveredIncrease*2;
+  let recovered4 = recovered - recoveredIncrease*3;
+  let recovered5 = recovered - recoveredIncrease*4;
+  let recovered6 = recovered - recoveredIncrease*5;
+  let recovered7 = recovered - recoveredIncrease*6;
+
+  let death2 = death - deathIncrease;
+  let death3 = death - deathIncrease*2;
+  let death4 = death - deathIncrease*3;
+  let death5 = death - deathIncrease*4;
+  let death6 = death - deathIncrease*5;
+  let death7 = death - deathIncrease*6;
+
+
   let data = {
     labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      date7,
+      date6,
+      date5,
+      date4,
+      date3,
+      date2,
+      date1,
     ],
     datasets: [
       {
@@ -64,25 +99,20 @@ const Secondpage = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86],
+        data: [positive7,positive6,positive5,positive4,positive3,positive2,positive],
       },
     ],
   };
 
   let data2 = {
     labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      date7,
+      date6,
+      date5,
+      date4,
+      date3,
+      date2,
+      date1,
     ],
     datasets: [
       {
@@ -104,25 +134,20 @@ const Secondpage = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [55, 79, 40, 71, 86, 35, 20, 55, 79, 40, 71, 86],
+        data: [tested7, tested6, tested5, tested4, tested3, tested2, tested],
       },
     ],
   };
 
   let data3 = {
     labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      date7,
+      date6,
+      date5,
+      date4,
+      date3,
+      date2,
+      date1,
     ],
     datasets: [
       {
@@ -144,25 +169,20 @@ const Secondpage = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [75, 99, 50, 31, 66, 75, 60, 75, 99, 50, 31, 66],
+        data: [recovered7, recovered6, recovered5, recovered4, recovered3, recovered2, recovered],
       },
     ],
   };
 
   let data4 = {
     labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      date7,
+      date6,
+      date5,
+      date4,
+      date3,
+      date2,
+      date1,
     ],
     datasets: [
       {
@@ -184,7 +204,7 @@ const Secondpage = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [15, 29, 70, 61, 86, 45, 90, 15, 29, 70, 61, 86],
+        data: [death7, death6, death5, death4, death3, death2, death],
       },
     ],
   };
@@ -264,6 +284,7 @@ const Secondpage = () => {
       setrecoveredIncrease(result.data.negativeIncrease);
       setdeathIncrease(result.data.deathIncrease);
       //setStateName(result.data[0].state);
+      setPositive1(result.data.positive1)
     };
     const savedata = () => {};
     fetchdata();
